@@ -1,0 +1,483 @@
+{
+  "metadata": {
+    "title": "Tamil Nadu Dam Irrigation Dataset",
+    "description": "Dataset mapping dams to beneficiary districts and irrigation zones. Used to identify relevant dam for a farmer based on their district (derived from pincode).",
+    "usage": "1. Get pincode from farmer. 2. Resolve pincode to district. 3. Match district to dam(s). 4. Return dam info and irrigation guidance.",
+    "version": "1.0",
+    "state": "Tamil Nadu, India"
+  },
+
+  "dams": [
+    {
+      "id": "DAM001",
+      "name": "Mettur Dam",
+      "official_name": "Stanley Reservoir",
+      "river": "Cauvery",
+      "river_system": "Cauvery System",
+      "district_location": "Salem",
+      "taluk_location": "Mettur",
+      "beneficiary_districts": [
+        "Salem",
+        "Namakkal",
+        "Erode",
+        "Karur",
+        "Tiruchirappalli",
+        "Ariyalur",
+        "Thanjavur",
+        "Tiruvarur",
+        "Nagapattinam",
+        "Mayiladuthurai",
+        "Cuddalore",
+        "Perambalur"
+      ],
+      "partial_beneficiary_districts": ["Cuddalore", "Perambalur"],
+      "command_areas": [
+        "Cauvery Delta",
+        "Mettur Canal",
+        "Pullambadi Canal",
+        "New Kattalai High Level Canal"
+      ],
+      "canal_systems": [
+        {
+          "name": "Mettur Canal",
+          "serves": ["Salem", "Namakkal", "Erode"]
+        },
+        {
+          "name": "Pullambadi Canal",
+          "serves": ["Tiruchirappalli", "Karur"]
+        },
+        {
+          "name": "New Kattalai High Level Canal",
+          "serves": ["Ariyalur", "Perambalur"]
+        },
+        {
+          "name": "Cauvery Delta System",
+          "serves": ["Thanjavur", "Tiruvarur", "Nagapattinam", "Mayiladuthurai", "Cuddalore"]
+        }
+      ],
+      "crop_seasons": {
+        "kuruvai": { "months": "June–September", "crop": "Short-term paddy" },
+        "samba": { "months": "October–January", "crop": "Long-term paddy" },
+        "thaladi": { "months": "November–February", "crop": "Rabi paddy" }
+      },
+      "major_crops": ["Paddy", "Sugarcane", "Banana", "Groundnut"],
+      "release_schedule": "Water release typically starts June–July. Governed by Cauvery Water Disputes Tribunal.",
+      "water_authority": "Public Works Department (PWD), Tamil Nadu",
+      "bot_note": "Mettur Dam is the largest in Tamil Nadu. Farmers in the Cauvery Delta depend heavily on its timely release. Check current storage and release status before advising."
+    },
+
+    {
+      "id": "DAM002",
+      "name": "Bhavanisagar Dam",
+      "official_name": "Lower Bhavani Project Dam",
+      "river": "Bhavani",
+      "river_system": "Cauvery System",
+      "district_location": "Erode",
+      "taluk_location": "Gobichettipalayam",
+      "beneficiary_districts": ["Erode", "Tiruppur", "Karur"],
+      "partial_beneficiary_districts": ["Karur"],
+      "command_areas": [
+        "Gobichettipalayam",
+        "Sathyamangalam",
+        "Perundurai Belt"
+      ],
+      "canal_systems": [
+        {
+          "name": "Lower Bhavani Project Canal (LBP Canal)",
+          "serves": ["Erode", "Tiruppur"]
+        },
+        {
+          "name": "Kalingarayan Canal",
+          "serves": ["Erode"]
+        },
+        {
+          "name": "Thadapalli Canal",
+          "serves": ["Erode", "Tiruppur"]
+        },
+        {
+          "name": "Arakkankottai Canal",
+          "serves": ["Tiruppur", "Karur"]
+        }
+      ],
+      "major_crops": ["Paddy", "Sugarcane", "Banana", "Turmeric", "Cotton"],
+      "water_authority": "Public Works Department (PWD), Tamil Nadu",
+      "bot_note": "Bhavanisagar serves a large sugarcane belt. Farmers should check LBP Canal rotation schedule for their area."
+    },
+
+    {
+      "id": "DAM003",
+      "name": "Amaravathi Dam",
+      "official_name": "Amaravathi Reservoir",
+      "river": "Amaravathi",
+      "river_system": "Cauvery System",
+      "district_location": "Tiruppur",
+      "taluk_location": "Udumalpet",
+      "beneficiary_districts": ["Tiruppur", "Karur", "Dindigul"],
+      "partial_beneficiary_districts": ["Dindigul"],
+      "command_areas": [
+        "Udumalpet",
+        "Dharapuram",
+        "Amaravathi Command Area"
+      ],
+      "canal_systems": [
+        {
+          "name": "Amaravathi Main Canal",
+          "serves": ["Tiruppur", "Karur"]
+        }
+      ],
+      "major_crops": ["Paddy", "Banana", "Coconut", "Sugarcane"],
+      "water_authority": "Public Works Department (PWD), Tamil Nadu",
+      "bot_note": "Amaravathi Dam serves the Udumalpet and Dharapuram belts. Coordinate with local PWD for release schedule."
+    },
+
+    {
+      "id": "DAM004",
+      "name": "Aliyar Dam",
+      "official_name": "Aliyar Reservoir",
+      "river": "Aliyar",
+      "river_system": "Parambikulam-Aliyar Project (PAP)",
+      "district_location": "Coimbatore",
+      "taluk_location": "Pollachi",
+      "beneficiary_districts": ["Coimbatore", "Tiruppur"],
+      "partial_beneficiary_districts": [],
+      "command_areas": [
+        "Pollachi",
+        "Kinathukadavu",
+        "Anaimalai"
+      ],
+      "canal_systems": [
+        {
+          "name": "PAP Main Canal",
+          "serves": ["Coimbatore", "Tiruppur"]
+        }
+      ],
+      "project": "Parambikulam Aliyar Project (PAP) — inter-state project with Kerala",
+      "major_crops": ["Paddy", "Sugarcane", "Banana", "Vegetables", "Flowers"],
+      "water_authority": "Parambikulam Aliyar Project Authority / PWD Tamil Nadu",
+      "bot_note": "Aliyar Dam is part of the PAP inter-state project. Water sharing is governed jointly by Tamil Nadu and Kerala."
+    },
+
+    {
+      "id": "DAM005",
+      "name": "Thirumurthy Dam",
+      "official_name": "Thirumurthy Reservoir",
+      "river": "Thirumurthy / Kannadanadhi",
+      "river_system": "Cauvery System",
+      "district_location": "Tiruppur",
+      "taluk_location": "Udumalpet",
+      "beneficiary_districts": ["Tiruppur"],
+      "partial_beneficiary_districts": [],
+      "command_areas": [
+        "Udumalpet",
+        "Madathukulam"
+      ],
+      "canal_systems": [
+        {
+          "name": "Thirumurthy Canal",
+          "serves": ["Tiruppur"]
+        }
+      ],
+      "major_crops": ["Paddy", "Sugarcane", "Groundnut"],
+      "water_authority": "Public Works Department (PWD), Tamil Nadu",
+      "bot_note": "Thirumurthy Dam is a smaller reservoir primarily serving Udumalpet and Madathukulam taluks."
+    },
+
+    {
+      "id": "DAM006",
+      "name": "Parambikulam Dam",
+      "official_name": "Parambikulam Reservoir",
+      "river": "Parambikulam",
+      "river_system": "Parambikulam-Aliyar Project (PAP)",
+      "district_location": "Palakkad, Kerala (water diverted to Tamil Nadu)",
+      "beneficiary_districts": ["Coimbatore", "Tiruppur", "Erode"],
+      "partial_beneficiary_districts": ["Erode"],
+      "command_areas": [
+        "Pollachi",
+        "Kinathukadavu",
+        "Anaimalai"
+      ],
+      "project": "Parambikulam Aliyar Project (PAP) — inter-state project with Kerala",
+      "canal_systems": [
+        {
+          "name": "PAP Tunnel and Canal System",
+          "serves": ["Coimbatore", "Tiruppur", "Erode"]
+        }
+      ],
+      "major_crops": ["Paddy", "Banana", "Sugarcane", "Coconut"],
+      "water_authority": "Parambikulam Aliyar Project Authority",
+      "bot_note": "Parambikulam Dam is located in Kerala but diverts water to Tamil Nadu through tunnels under PAP. Same authority as Aliyar Dam."
+    },
+
+    {
+      "id": "DAM007",
+      "name": "Periyar Dam",
+      "official_name": "Mullaperiyar Dam",
+      "river": "Periyar",
+      "river_system": "Periyar System (Inter-State — Kerala storage, Tamil Nadu use)",
+      "district_location": "Idukki, Kerala (water diverted to Tamil Nadu)",
+      "beneficiary_districts": ["Theni", "Dindigul", "Madurai", "Sivagangai", "Ramanathapuram", "Virudhunagar"],
+      "partial_beneficiary_districts": ["Virudhunagar"],
+      "command_areas": [
+        "Periyar-Vaigai Command Area",
+        "Madurai Irrigation Zone",
+        "Sivagangai Irrigation Zone"
+      ],
+      "canal_systems": [
+        {
+          "name": "Periyar Main Canal",
+          "serves": ["Theni", "Dindigul", "Madurai"]
+        },
+        {
+          "name": "Vaigai Feeder",
+          "serves": ["Madurai", "Sivagangai", "Ramanathapuram"]
+        }
+      ],
+      "note": "This is one of the most important water sources for South Tamil Nadu. Water stored in Kerala, released to Tamil Nadu side.",
+      "major_crops": ["Paddy", "Banana", "Sugarcane", "Pulses", "Groundnut"],
+      "water_authority": "PWD Tamil Nadu; Dam safety under Mullaperiyar Supervisory Committee (Supreme Court-mandated)",
+      "bot_note": "Mullaperiyar is critical for 5 southern districts. Water level decisions impact millions of farmers. Always check current level and release orders."
+    },
+
+    {
+      "id": "DAM008",
+      "name": "Vaigai Dam",
+      "official_name": "Vaigai Reservoir",
+      "river": "Vaigai",
+      "river_system": "Vaigai System",
+      "district_location": "Theni",
+      "taluk_location": "Andipatti",
+      "beneficiary_districts": ["Theni", "Dindigul", "Madurai", "Sivagangai", "Ramanathapuram", "Virudhunagar"],
+      "partial_beneficiary_districts": [],
+      "command_areas": [
+        "Vaigai Command Area",
+        "Madurai Belt",
+        "Sivagangai Belt",
+        "Ramanathapuram Belt"
+      ],
+      "canal_systems": [
+        {
+          "name": "Vaigai Main Canal",
+          "serves": ["Theni", "Dindigul", "Madurai"]
+        },
+        {
+          "name": "South Bank Canal",
+          "serves": ["Sivagangai", "Ramanathapuram", "Virudhunagar"]
+        }
+      ],
+      "major_crops": ["Paddy", "Banana", "Cotton", "Groundnut", "Pulses"],
+      "water_authority": "Public Works Department (PWD), Tamil Nadu",
+      "bot_note": "Vaigai Dam is the lifeline for farmers in southern Tamil Nadu. Combined with Mullaperiyar inflows, it sustains a large paddy belt."
+    },
+
+    {
+      "id": "DAM009",
+      "name": "Papanasam Dam",
+      "official_name": "Papanasam Reservoir / Servalar Reservoir",
+      "river": "Tamirabarani",
+      "river_system": "Tamirabarani System",
+      "district_location": "Tirunelveli",
+      "taluk_location": "Ambasamudram",
+      "beneficiary_districts": ["Tirunelveli", "Thoothukudi"],
+      "partial_beneficiary_districts": ["Thoothukudi"],
+      "command_areas": [
+        "Tamirabarani Basin",
+        "Ambasamudram Belt",
+        "Tirunelveli Paddy Zone"
+      ],
+      "canal_systems": [
+        {
+          "name": "Tamirabarani Main Canal",
+          "serves": ["Tirunelveli", "Thoothukudi"]
+        }
+      ],
+      "major_crops": ["Paddy", "Banana", "Groundnut", "Vegetables"],
+      "water_authority": "Public Works Department (PWD), Tamil Nadu",
+      "bot_note": "Papanasam Dam feeds the Tamirabarani river basin, known for year-round water availability compared to other TN rivers."
+    },
+
+    {
+      "id": "DAM010",
+      "name": "Manimuthar Dam",
+      "official_name": "Manimuthar Reservoir",
+      "river": "Manimuthar (tributary of Tamirabarani)",
+      "river_system": "Tamirabarani System",
+      "district_location": "Tirunelveli",
+      "taluk_location": "Ambasamudram",
+      "beneficiary_districts": ["Tirunelveli", "Thoothukudi"],
+      "partial_beneficiary_districts": [],
+      "command_areas": [
+        "Tamirabarani Irrigation System",
+        "Tirunelveli Southern Zone"
+      ],
+      "canal_systems": [
+        {
+          "name": "Manimuthar Canal",
+          "serves": ["Tirunelveli", "Thoothukudi"]
+        }
+      ],
+      "major_crops": ["Paddy", "Banana", "Pulses"],
+      "water_authority": "Public Works Department (PWD), Tamil Nadu",
+      "bot_note": "Manimuthar Dam supplements the Tamirabarani system. Often operated in coordination with Papanasam Dam."
+    },
+
+    {
+      "id": "DAM011",
+      "name": "Pechiparai Dam",
+      "official_name": "Pechiparai Reservoir",
+      "river": "Paralayar",
+      "river_system": "Paralayar System",
+      "district_location": "Kanniyakumari",
+      "taluk_location": "Killiyoor",
+      "beneficiary_districts": ["Kanniyakumari"],
+      "partial_beneficiary_districts": [],
+      "command_areas": [
+        "Nagercoil",
+        "Kalkulam",
+        "Vilavancode"
+      ],
+      "canal_systems": [
+        {
+          "name": "Pechiparai Main Canal",
+          "serves": ["Nagercoil", "Kalkulam", "Vilavancode"]
+        }
+      ],
+      "major_crops": ["Paddy", "Coconut", "Banana", "Vegetables"],
+      "water_authority": "Public Works Department (PWD), Tamil Nadu",
+      "bot_note": "Pechiparai is the main dam for Kanniyakumari district's northern taluks. Serves Nagercoil, Kalkulam, and Vilavancode."
+    },
+
+    {
+      "id": "DAM012",
+      "name": "Perunchani Dam",
+      "official_name": "Perunchani Reservoir",
+      "river": "Kodayar",
+      "river_system": "Kodayar System",
+      "district_location": "Kanniyakumari",
+      "taluk_location": "Thovalai",
+      "beneficiary_districts": ["Kanniyakumari"],
+      "partial_beneficiary_districts": [],
+      "command_areas": [
+        "Padmanabhapuram",
+        "Kalkulam"
+      ],
+      "canal_systems": [
+        {
+          "name": "Perunchani Main Canal",
+          "serves": ["Padmanabhapuram", "Kalkulam"]
+        }
+      ],
+      "major_crops": ["Paddy", "Coconut", "Banana"],
+      "water_authority": "Public Works Department (PWD), Tamil Nadu",
+      "bot_note": "Perunchani serves the southern and south-western taluks of Kanniyakumari. Often used alongside Pechiparai for paddy cultivation."
+    },
+
+    {
+      "id": "DAM013",
+      "name": "Krishnagiri Dam",
+      "official_name": "Krishnagiri Reservoir",
+      "river": "Thenpennai (Ponnaiyar tributary)",
+      "river_system": "Ponnaiyar System",
+      "district_location": "Krishnagiri",
+      "taluk_location": "Krishnagiri",
+      "beneficiary_districts": ["Krishnagiri", "Dharmapuri"],
+      "partial_beneficiary_districts": [],
+      "command_areas": [
+        "Krishnagiri Command Area",
+        "Dharmapuri Command Area"
+      ],
+      "canal_systems": [
+        {
+          "name": "Krishnagiri Main Canal",
+          "serves": ["Krishnagiri", "Dharmapuri"]
+        }
+      ],
+      "major_crops": ["Mango", "Groundnut", "Maize", "Paddy", "Tapioca"],
+      "water_authority": "Public Works Department (PWD), Tamil Nadu",
+      "bot_note": "Krishnagiri district is Tamil Nadu's mango capital. Irrigation here supports both food crops and large-scale horticulture."
+    },
+
+    {
+      "id": "DAM014",
+      "name": "Sathanur Dam",
+      "official_name": "Sathanur Reservoir",
+      "river": "Thenpennai (Pennaiyar)",
+      "river_system": "Ponnaiyar System",
+      "district_location": "Tiruvannamalai",
+      "taluk_location": "Polur",
+      "beneficiary_districts": ["Tiruvannamalai", "Villupuram", "Kallakurichi"],
+      "partial_beneficiary_districts": ["Villupuram", "Kallakurichi"],
+      "command_areas": [
+        "Tiruvannamalai Command Area",
+        "Villupuram Northern Belt"
+      ],
+      "canal_systems": [
+        {
+          "name": "Sathanur Main Canal",
+          "serves": ["Tiruvannamalai", "Villupuram", "Kallakurichi"]
+        }
+      ],
+      "major_crops": ["Paddy", "Groundnut", "Sugarcane", "Pulses"],
+      "water_authority": "Public Works Department (PWD), Tamil Nadu",
+      "bot_note": "Sathanur Dam serves the Pennaiyar basin. Check seasonal release for kharif and rabi planning."
+    }
+  ],
+
+  "district_to_dam_index": {
+    "Salem": ["DAM001"],
+    "Namakkal": ["DAM001"],
+    "Erode": ["DAM001", "DAM002", "DAM006"],
+    "Karur": ["DAM001", "DAM002", "DAM003"],
+    "Tiruchirappalli": ["DAM001"],
+    "Ariyalur": ["DAM001"],
+    "Thanjavur": ["DAM001"],
+    "Tiruvarur": ["DAM001"],
+    "Nagapattinam": ["DAM001"],
+    "Mayiladuthurai": ["DAM001"],
+    "Cuddalore": ["DAM001"],
+    "Perambalur": ["DAM001"],
+    "Tiruppur": ["DAM002", "DAM003", "DAM004", "DAM005", "DAM006"],
+    "Coimbatore": ["DAM004", "DAM006"],
+    "Theni": ["DAM007", "DAM008"],
+    "Dindigul": ["DAM003", "DAM007", "DAM008"],
+    "Madurai": ["DAM007", "DAM008"],
+    "Sivagangai": ["DAM007", "DAM008"],
+    "Ramanathapuram": ["DAM007", "DAM008"],
+    "Virudhunagar": ["DAM007", "DAM008"],
+    "Tirunelveli": ["DAM009", "DAM010"],
+    "Thoothukudi": ["DAM009", "DAM010"],
+    "Kanniyakumari": ["DAM011", "DAM012"],
+    "Krishnagiri": ["DAM013"],
+    "Dharmapuri": ["DAM013"],
+    "Tiruvannamalai": ["DAM014"],
+    "Villupuram": ["DAM014"],
+    "Kallakurichi": ["DAM014"]
+  },
+
+  "bot_instructions": {
+    "step1": "Receive pincode from farmer.",
+    "step2": "Call a pincode-to-district API (e.g., postalpincode.in or India Post API) to get district name.",
+    "step3": "Normalize district name to match keys in district_to_dam_index (handle case, alternate spellings).",
+    "step4": "Look up district in district_to_dam_index to get list of dam IDs.",
+    "step5": "Fetch dam details from dams array using matched dam IDs.",
+    "step6": "If multiple dams found, ask farmer about their taluk/village or crop type to narrow down.",
+    "step7": "Present relevant dam info: name, canal system, crop seasons, release schedule, water authority contact.",
+    "step8": "Optionally check live storage data from Tamil Nadu PWD portal: https://www.tawdeva.com or https://www.tnpwd.gov.in",
+    "fallback": "If district not found in index, inform farmer that their area may depend on local tanks or minor irrigation. Advise contacting the local PWD office.",
+    "language_note": "Respond in Tamil if farmer uses Tamil. Key Tamil terms: அணை (dam), கால்வாய் (canal), நீர்பாசனம் (irrigation), நீர் வெளியீடு (water release)."
+  },
+
+  "alternate_district_spellings": {
+    "Trichy": "Tiruchirappalli",
+    "Tiruchirapalli": "Tiruchirappalli",
+    "Trichirappalli": "Tiruchirappalli",
+    "Nagercoil District": "Kanniyakumari",
+    "Kanyakumari": "Kanniyakumari",
+    "Tuticorin": "Thoothukudi",
+    "Tirunelvely": "Tirunelveli",
+    "Coimbatore South": "Coimbatore",
+    "Vellore": "Vellore",
+    "Tirupur": "Tiruppur",
+    "Dharmapuri District": "Dharmapuri",
+    "Krishnagiri District": "Krishnagiri"
+  }
+}
