@@ -13,10 +13,12 @@ async def build_context(farmer_text: str, farmer_profile: dict) -> dict:
     district = farmer_profile.get("district")
     crop = farmer_profile.get("primary_crop")
     days = farmer_profile.get("days_after_sowing")
+    lat = farmer_profile.get("lat")
+    lon = farmer_profile.get("lon")
     tasks = {}
 
     if "irrigation" in intents:
-        if district: tasks["weather"] = weather_service.get_weather(district=district)
+        if district or (lat and lon): tasks["weather"] = weather_service.get_weather(district=district, lat=lat, lon=lon)
         # Pass farmer_text so dam_service can extract dam names
         tasks["dam"] = dam_service.get_dam_context(district=district, farmer_text=farmer_text)
         if district: tasks["soil"] = asyncio.to_thread(soil_service.get_soil_data, district)
@@ -41,10 +43,18 @@ async def build_context(farmer_text: str, farmer_profile: dict) -> dict:
     elif "crop_recommend" in intents:
         if district:
             tasks["soil"] = asyncio.to_thread(soil_service.get_soil_data, district)
-            tasks["weather"] = weather_service.get_weather(district=district)
+        if district or (lat and lon):
+            tasks["weather"] = weather_service.get_weather(district=district, lat=lat, lon=lon)
+
+    elif "location" in intents:
+        from services import location_service
+        from services.farmer_service import _text_to_pincode
+        pincode = _text_to_pincode(farmer_text)
+        if pincode:
+            tasks["location_details"] = asyncio.to_thread(location_service.resolve_location, pincode)
 
     else:
-        if district: tasks["weather"] = weather_service.get_weather(district=district)
+        if district or (lat and lon): tasks["weather"] = weather_service.get_weather(district=district, lat=lat, lon=lon)
 
     if tasks:
         keys = list(tasks.keys())

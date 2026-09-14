@@ -3,16 +3,25 @@ services/ai_service.py — STATELESS GPT + Whisper with language hint + TTS nova
 Fixed: no gpt-4o-mini-tts (SDK too old), uses tts-1 nova at speed=0.85
 """
 
-import os, time, asyncio, tempfile
+import os, time, asyncio, tempfile, base64
+import httpx
 import openai
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-if not OPENAI_API_KEY or OPENAI_API_KEY == "your_key_here":
-    print("❌ OPENAI_API_KEY missing!")
+SARVAM_API_KEY = os.getenv("SARVAM_API_KEY", "")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+
+if not GROQ_API_KEY or GROQ_API_KEY == "your_groq_key_here":
+    print("❌ GROQ_API_KEY missing!")
     openai_client = None
 else:
-    openai_client = openai.OpenAI(api_key=OPENAI_API_KEY)
-    print(f"✅ OpenAI client initialized ({OPENAI_API_KEY[:8]}...)")
+    # Groq provides OpenAI-compatible endpoints
+    openai_client = openai.OpenAI(api_key=GROQ_API_KEY, base_url="https://api.groq.com/openai/v1")
+    print(f"✅ Groq client initialized ({GROQ_API_KEY[:8]}...)")
+
+if not SARVAM_API_KEY or SARVAM_API_KEY == "your_sarvam_key_here":
+    print("❌ SARVAM_API_KEY missing!")
+else:
+    print(f"✅ Sarvam initialized ({SARVAM_API_KEY[:8]}...)")
 
 _call_count = 0
 _reset_time = time.time()
@@ -20,7 +29,7 @@ _reset_time = time.time()
 def check_rate_limit():
     global _call_count, _reset_time
     if not openai_client:
-        raise Exception("OpenAI not configured.")
+        raise Exception("Groq not configured.")
     if time.time() - _reset_time > 86400:
         _call_count = 0
         _reset_time = time.time()
@@ -52,6 +61,7 @@ disease → disease analysis. NOT weather.
 fertilizer → nutrient/fertilizer. NOT disease.
 crop_recommend → which crop. NOT fertilizer.
 dam → reservoir status. NOT irrigation advice.
+location → location details of pincode/village. NOT crop advice.
 general → use weather if available, or answer the question.
 
 RULE 5 — DISEASE PROTOCOL:
@@ -153,6 +163,17 @@ def _build_user_message(farmer_text: str, farmer_profile: dict, context: dict) -
     if context.get("crop_recommendation") and "crop_recommend" in intents:
         data_parts.append(f"CROP_PREDICTION: {context['crop_recommendation']}")
 
+    # Location Details
+    loc = context.get("location_details", {})
+    if loc and "location" in intents:
+        data_parts.append(
+            f"LOCATION: pincode={loc.get('pincode')} village={loc.get('village')} "
+            f"district={loc.get('district')} taluk={loc.get('taluk')} block={loc.get('block')} "
+            f"state={loc.get('state')} location_name={loc.get('location')}"
+        )
+    elif "location" in intents:
+        data_parts.append("LOCATION: details not found for this pincode/village.")
+
     data_str = "\n".join(data_parts) if data_parts else "no data available"
     parts.append(f"<data>\n{data_str}\n</data>")
     parts.append(f"<question>{farmer_text}</question>")
@@ -169,8 +190,8 @@ async def get_kisan_response(farmer_text: str, farmer_profile: dict, context: di
         response = await asyncio.wait_for(
             asyncio.to_thread(
                 openai_client.chat.completions.create,
-                model="gpt-4o-mini",
-                max_tokens=200,
+                model="openai/gpt-oss-120b",
+                max_tokens=1024,
                 temperature=0,
                 messages=[
                     {"role": "system", "content": SYSTEM_PROMPT},
@@ -180,13 +201,32 @@ async def get_kisan_response(farmer_text: str, farmer_profile: dict, context: di
             timeout=15.0,
         )
         answer = response.choices[0].message.content
-        print(f"✅ GPT: {answer[:80]}...")
+        print(f"✅ GPT (primary): {answer[:80]}...")
         return answer
-    except asyncio.TimeoutError:
-        return "பதில் தாமதமாகிறது. மீண்டும் முயற்சிக்கவும்."
-    except Exception as e:
-        print(f"❌ GPT error: {e}")
-        return "தொழில்நுட்ப பிழை. மீண்டும் முயற்சிக்கவும்."
+    except (asyncio.TimeoutError, Exception) as e:
+        print(f"⚠️ Primary model failed ({e}), falling back to openai/gpt-oss-20b...")
+        try:
+            response = await asyncio.wait_for(
+                asyncio.to_thread(
+                    openai_client.chat.completions.create,
+                    model="openai/gpt-oss-20b",
+                    max_tokens=1024,
+                    temperature=0,
+                    messages=[
+                        {"role": "system", "content": SYSTEM_PROMPT},
+                        {"role": "user", "content": user_message},
+                    ],
+                ),
+                timeout=10.0,
+            )
+            answer = response.choices[0].message.content
+            print(f"✅ GPT (fallback): {answer[:80]}...")
+            return answer
+        except asyncio.TimeoutError:
+            return "பதில் தாமதமாகிறது. மீண்டும் முயற்சிக்கவும்."
+        except Exception as e2:
+            print(f"❌ Fallback error: {e2}")
+            return "தொழில்நுட்ப பிழை. மீண்டும் முயற்சிக்கவும்."
 
 
 # ─── Whisper ──────────────────────────────────────────────────────────
@@ -213,48 +253,91 @@ async def transcribe_audio(audio_bytes, content_type="audio/webm",
                 "telugu": "te", "kannada": "kn", "malayalam": "ml"}
     wl = lang_map.get(language, language if len(str(language)) <= 2 else "ta")
 
-    print(f"🎤 Whisper: {len(audio_bytes)} bytes, lang={wl}, ext=.{ext}")
-    tmp_path = None
+    # For Sarvam, "ta-IN" is standard, but saaras:v3 supports "hi-IN", "en-IN", etc.
+    # Fallback to ta-IN since this is for Tamil Nadu farmers.
+    sarvam_lang = "ta-IN"
+    
+    print(f"🎤 Sarvam STT: {len(audio_bytes)} bytes, ext=.{ext}")
+    
+    if not SARVAM_API_KEY:
+        print("❌ SARVAM_API_KEY missing, STT cannot proceed.")
+        return "மன்னிக்கவும், கணினி பிழை."
+    
+    url = "https://api.sarvam.ai/speech-to-text"
+    headers = {"api-subscription-key": SARVAM_API_KEY}
+    
+    # Clean the MIME type (e.g. remove ;codecs=opus from audio/webm;codecs=opus)
+    clean_content_type = content_type.split(";")[0]
+    
+    # We can pass raw bytes to httpx
+    files = {"file": (filename, audio_bytes, clean_content_type)}
+    data = {"model": "saaras:v3", "language_code": sarvam_lang}
+    
     try:
-        with tempfile.NamedTemporaryFile(suffix=f".{ext}", delete=False) as tmp:
-            tmp.write(audio_bytes)
-            tmp_path = tmp.name
-        def _t():
-            with open(tmp_path, "rb") as f:
-                return openai_client.audio.transcriptions.create(
-                    model="whisper-1", file=f,
-                    language=wl,
-                    prompt=WHISPER_PROMPT if wl == "ta" else "",
-                    temperature=0,
-                )
-        result = await asyncio.to_thread(_t)
-        print(f"🎤 Transcript: '{result.text}'")
-        return result.text
+        async with httpx.AsyncClient(timeout=30) as client:
+            resp = await client.post(url, headers=headers, files=files, data=data)
+            resp.raise_for_status()
+            raw = resp.json()
+            transcript = raw.get("transcript", "")
+            print(f"🎤 Transcript: '{transcript}'")
+            return transcript
+    except httpx.HTTPStatusError as e:
+        print(f"❌ Sarvam STT HTTP error: {e.response.status_code} - {e.response.text}")
+        return "மன்னிக்கவும், கணினி பிழை."
     except Exception as e:
-        print(f"❌ Whisper: {e}")
-        raise
-    finally:
-        if tmp_path and os.path.exists(tmp_path):
-            try: os.unlink(tmp_path)
-            except: pass
+        print(f"❌ Sarvam STT error: {e}")
+        return "மன்னிக்கவும், கணினி பிழை."
 
 
 # ─── TTS (tts-1, nova voice, speed=0.85 for clarity) ─────────────────
 
 async def text_to_speech(text: str, output_path: str) -> str:
     """
-    tts-1 with nova voice at speed=0.85.
-    Nova is the clearest voice for non-English text.
-    Speed 0.85 slows it just enough to be understandable.
+    Sarvam bulbul:v3 for clear Tamil text-to-speech.
     """
     check_rate_limit()
-    def _t():
-        response = openai_client.audio.speech.create(
-            model="tts-1",
-            voice="nova",
-            input=text[:500],
-            speed=0.85,
-        )
-        response.stream_to_file(output_path)
+    if not SARVAM_API_KEY:
+        print("❌ SARVAM_API_KEY missing, TTS cannot proceed.")
         return output_path
-    return await asyncio.to_thread(_t)
+
+    url = "https://api.sarvam.ai/text-to-speech"
+    headers = {
+        "api-subscription-key": SARVAM_API_KEY,
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "text": text[:500],
+        "target_language_code": "ta-IN",
+        "model": "bulbul:v3",
+        "speaker": "shubh"
+    }
+
+    try:
+        async with httpx.AsyncClient(timeout=30) as client:
+            resp = await client.post(url, headers=headers, json=payload)
+            if resp.status_code != 200:
+                print(f"❌ Sarvam TTS error: {resp.status_code} - {resp.text}")
+            resp.raise_for_status()
+            resp_json = resp.json()
+            
+            audios = resp_json.get("audios", [])
+            if not audios:
+                print("❌ Sarvam TTS error: No audios in response")
+                return output_path
+                
+            audio_b64 = audios[0]
+            audio_bytes = base64.b64decode(audio_b64)
+            
+            # Note: Sarvam might return wav instead of mp3 natively. 
+            # We are writing to whatever output_path (e.g. .mp3) Exotel expects. 
+            # If Exotel doesn't support the raw format, we might need ffmpeg later.
+            # But Exotel often supports raw wav saved with .mp3 extension if it's uncompressed, 
+            # or we might need to actually rename it to .wav.
+            with open(output_path, "wb") as f:
+                f.write(audio_bytes)
+                
+            return output_path
+    except Exception as e:
+        print(f"❌ Sarvam TTS error: {e}")
+        return output_path

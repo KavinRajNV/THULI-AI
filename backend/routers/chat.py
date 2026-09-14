@@ -15,15 +15,14 @@ BASE_URL = os.getenv("BASE_URL", "http://localhost:8000")
 
 
 def _audio_url(req: Request, path: str) -> str:
-    if "your-render-url" in BASE_URL:
-        return f"{req.base_url}{path}"
-    return f"{BASE_URL}/{path}"
+    return f"{req.base_url}{path}"
 
 
 def _profile(f: dict) -> dict:
     return {
         "district": f.get("district"), "crop": f.get("primary_crop"),
         "days": f.get("days_after_sowing"),
+        "lat": f.get("lat"), "lon": f.get("lon"),
         "onboarding_complete": f.get("onboarding_complete", False),
         "language": f.get("language", "tamil"),
     }
@@ -33,12 +32,12 @@ async def _safe_tts(text: str, request: Request) -> str | None:
     """Generate TTS with timeout. Returns audio URL or None on failure."""
     try:
         aid = uuid.uuid4().hex[:12]
-        mp3 = f"static/{aid}.mp3"
+        wav = f"static/{aid}.wav"
         await asyncio.wait_for(
-            ai_service.text_to_speech(text, mp3),
+            ai_service.text_to_speech(text, wav),
             timeout=10.0,
         )
-        return _audio_url(request, mp3)
+        return _audio_url(request, wav)
     except asyncio.TimeoutError:
         print("⚠️ TTS timed out (10s)")
         return None

@@ -59,6 +59,13 @@ INTENT_KEYWORDS = {
         "விளைச்சல்", "எவ்வளவு", "மகசூல்", "லாபம்", "விலை",
         "vilaichal", "profit",
     ],
+    "location": [
+        "location", "pincode", "village", "taluk", "district",
+        "post office", "address",
+        "பின்கோடு", "ஊர்", "கிராமம்", "தாலுகா", "மாவட்டம்",
+        "தபால் நிலையம்", "முகவரி",
+        "pin code",
+    ],
 }
 
 

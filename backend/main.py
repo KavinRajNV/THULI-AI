@@ -27,12 +27,17 @@ async def lifespan(app: FastAPI):
     # --- Startup ---
     print("🌾 KISAN.AI starting up...")
 
-    # Verify critical env vars
-    api_key = os.getenv("OPENAI_API_KEY", "")
-    if not api_key or api_key == "your_key_here":
-        print("❌ WARNING: OPENAI_API_KEY is not set! GPT/Whisper/TTS will fail.")
+    sarvam_key = os.getenv("SARVAM_API_KEY", "")
+    if not sarvam_key or sarvam_key == "your_sarvam_key_here":
+        print("❌ WARNING: SARVAM_API_KEY is not set! STT/TTS will fail.")
     else:
-        print(f"✅ OpenAI API key loaded ({api_key[:8]}...)")
+        print(f"✅ Sarvam API key loaded ({sarvam_key[:8]}...)")
+
+    groq_key = os.getenv("GROQ_API_KEY", "")
+    if not groq_key or groq_key == "your_groq_key_here":
+        print("❌ WARNING: GROQ_API_KEY is not set! LLM will fail.")
+    else:
+        print(f"✅ Groq API key loaded ({groq_key[:8]}...)")
 
     mongo_uri = os.getenv("MONGODB_URI", "")
     if not mongo_uri or mongo_uri == "your_mongodb_atlas_uri_here":
