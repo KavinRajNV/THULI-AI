@@ -141,7 +141,7 @@ def init_models():
         # We store indices in backend/data/faiss_indices
         data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
         index_dir = os.path.join(data_dir, "faiss_indices")
-        kb_path = os.path.join(os.path.dirname(__file__), "..", "..", "disease-prediction", "kb_data_gen.json")
+        kb_path = os.path.join(data_dir, "kb_data_gen.json")
         
         # Verify KB path exists
         if not os.path.exists(kb_path):

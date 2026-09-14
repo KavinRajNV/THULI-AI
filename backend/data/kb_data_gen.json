@@ -1,0 +1,578 @@
+[
+  {
+    "crop": "RICE",
+    "disease_name": "Blast",
+    "causal_organism": "Magnoporthe grisea",
+    "symptoms_english": "The fungus infects the leaf, leaf sheath, culm, node, and neck of the panicle. Leaves develop typical spindle-shaped (eye-shaped) spots with dark brown margins and grey centers, which may coalesce and cause foliage drying. Node infection causes black necrotic lesions leading to weakened or broken nodes. Neck infection causes the neck region to become black, brittle, and necrotic, resulting in chaffy or partially filled grains.",
+    "cause_english": "Intermittent drizzles, cloudy weather, more of rainy days, longer duration of dew high relative humidity (93-99 per cent); Low night temperature (between 15-20°C or less than 26°C; Aavailability of collateral hosts and excess dose of nitrogen.",
+    "remedy_english": "Dry seed treatment: Thiram or captan or carboxin or carbendazim at 2 g/kg of seeds. Wet seed treatment: Carbendazim or Tricyclozole at 2 g/lit of water for 1 kg of seed. Treat the seeds with talc based formulation of P. fluorescens (Pf1) @ 10g/kg of seed. Seedling dip: Sprinkle 2.5 kg of the talc based formulation of Pseudomonas fluorescens (Pf1). Nursery Spray: Carbendazim 50WP @ 1g/l or Tricyclozole 75 WP @ 1g/1 or Metominostrobin 20 SC @ 1ml/l or Azoxystrobin 25 SC @ 1 ml/l. Main Field Cultural: Apply N in three split doses (50% basal, 25% in tillering phase and 25% N in panicle initiation stage). Main Field Chemical Spray: Carbendazim 50WP @ 500g/ha (or) Tricyclozole 75 WP @ 500g/ha (or) Metominostrobin 20 SC @ 500ml/ha (or) Azoxystrobin 25 SC @ 500 ml/ha. Biological: Seed Treatment with TNAU Pf 1liquid formulation @ 10 ml/kg of seeds. Seedling root dipping with TNAU Pf 1liquid formulation (500 ml for one hectare seedlings). Soil application with TNAU Pf 1liquid formulation (500ml/ha). Foliar spray with TNAU Pf 1liquid formulation @ 5ml/lit.",
+    "page_reference": "250, 254-256"
+  },
+  {
+    "crop": "RICE",
+    "disease_name": "Brown leaf spot ((Sesame leaf spot)",
+    "causal_organism": "Helminthsporium oryzae (Drechslera oryzae)",
+    "symptoms_english": "Symptoms appear on leaves, leaf sheath, glumes, and grains. Leaves develop rectangular or oval spots that resemble sesame seeds, which are uniformly brown or reddish-brown with discrete margins and a halo. Glumes and grains develop brown lesions leading to grain discolouration.",
+    "cause_english": "Temperature of 25-30°C with relative humidity above 80 per cent are highly favourable; Excess of nitrogen aggravates the disease severity.",
+    "remedy_english": "Nursery Spray: Metominostrobin @ 1ml/lit of water. Main Field Spray: Metominostrobin @ 500ml/ha.",
+    "page_reference": "250-251, 255, 257"
+  },
+  {
+    "crop": "RICE",
+    "disease_name": "Sheath rot",
+    "causal_organism": "Sarocladium oryzae",
+    "symptoms_english": "Infection occurs at the boot leaf stage. The uppermost leaf sheath enclosing the ear head shows dark brown or black, circular to irregular patches. Panicles fail to emerge fully, glumes become discoloured, and white powdery mycelial growth appears inside the sheath and on the panicle.",
+    "cause_english": "Closer planting ; High doses of nitrogen; High humidity and temperature around 25-30°C Injuries made by leaf folder, brown plant hopper and mites increase infection",
+    "remedy_english": "Cultural: Apply Gypsum @ 500 kg/ha at two equal splits once basally and another at active tillering stage. Botanicals: Neem oil 3%, Ipomoea leaf powder extract (25 kg/ha), Prosopis leaf powder extract (25 kg/ha). Chemical Spray: Carbendazim @ 500g/ha, Metominostrobin @ 500 ml/ha, Hexaconazole 75% WG @ 100 mg/lit 1st spray at the time of disease appearance and 2nd spray 15 days later. Biological control: Seed Treatment with TNAU Pf 1liquid formulation @ 10 ml/kg of seeds, Seedling root dipping with TNAU Pf 1liquid formulation (500 ml for one hectare seedlings), Soil application with TNAU Pf 1liquid formulation (500ml/ha), Foliar spray with TNAU Pf 1liquid formulation @ 5ml/lit. Neem oil 60 EC 3% (or) NSKE 5% is recommended.",
+    "page_reference": "251, 257, 259"
+  },
+  {
+    "crop": "RICE",
+    "disease_name": "Sheath blight",
+    "causal_organism": "Rhizoctonia solani",
+    "symptoms_english": "Occurs at the tillering stage, forming oval or ellipsoid greyish-green lesions on the leaf sheath near the water level. Lesions enlarge, turning greyish-white in the center with a brown margin, eventually causing leaf blight and culm rot. Small spherical brown sclerotia form inside the culm and on the leaf sheath.",
+    "cause_english": "High relative humidity (96-97 per cent), high temperature (30-32°C); Closer planting; Heavy doses of nitrogenous fertilizers",
+    "remedy_english": "Cultural: Apply Neem cake at 150 kg/ha. Botanical: Foliar spray with Neem oil at 3% (15 lit /ha) starting from disease appearance, or Neem oil 60 EC 3% (or) NSKE 5%. Chemical: Carbendazim 50 WP @ 500g/ha, Azoxystrobin @ 500ml/ha, Hexaconazole 75% WG @ 100mg/ lit 1st spray at the time of disease appearance and 2nd spray 15 days later. Biological control: Seed Treatment with TNAU Pf 1liquid formulation @ 10 ml/kg of seeds, Seedling root dipping with TNAU Pf 1liquid formulation (500 ml for one hectare seedlings), Soil application with TNAU Pf 1liquid formulation (500ml/ha), Foliar spray with TNAU Pf 1liquid formulation @ 5ml/lit.",
+    "page_reference": "251-252, 258-259"
+  },
+  {
+    "crop": "RICE",
+    "disease_name": "Stem rot",
+    "causal_organism": "Sclerotium oryzae",
+    "symptoms_english": "Affects the leaf sheath near the water level during later growth stages, forming dark brown to black lesions. The tissue rots, displaying small black spherical sclerotia visible as dots. The culm collapses causing the plant to lodge, with profuse mycelium and sclerotia visible inside the opened tiller.",
+    "cause_english": "Infestation of leaf hoppers and stem borer; High doses of nitrogenous fertilizers.",
+    "remedy_english": "",
+    "page_reference": "252"
+  },
+  {
+    "crop": "RICE",
+    "disease_name": "False smut (Lakshmi Disease)",
+    "causal_organism": "Ustilaginoidea virens",
+    "symptoms_english": "Affects a few grains in the earhead, converting them into green velvety masses larger than normal grains. Spore balls appear between unaffected glumes, and the fungus produces chlamydospores that develop into sclerotia.",
+    "cause_english": "Rainfall and cloudy weather during flowering and maturity favours the disease development.",
+    "remedy_english": "Two sprayings of Propiconazole 25 EC @ 500ml/ha (or) Copper hydroxide 77 WP @ 1.25 kg/ha at boot leaf and 50% flowering",
+    "page_reference": "252, 258"
+  },
+  {
+    "crop": "RICE",
+    "disease_name": "Oodubathi disease",
+    "causal_organism": "Ephelis oryzae",
+    "symptoms_english": "The panicle emerges as a slender, dirty grey, cylindrical spike because the spikelets are cemented together by fungal mycelium. Affected earheads produce no grains.",
+    "cause_english": "",
+    "remedy_english": "",
+    "page_reference": "253"
+  },
+  {
+    "crop": "RICE",
+    "disease_name": "Grain discolouration",
+    "causal_organism": "Helminthosporium, Curvularia, Alternaria Fusarium",
+    "symptoms_english": "Grains become discoloured (red, yellow, orange, pink, or black) with dark brown or black spots due to external or internal infection of the glumes or kernels. Under humid conditions, prominent fungal growth may be seen on the grains.",
+    "cause_english": "Under humid conditions, the fungal growth may be prominently seen on grains.",
+    "remedy_english": "Chemical Spray : Carbendazim + Thiram + Mancozeb (1:1:1) 0.2% at 50% flowering stage. Neem oil 60 EC 3% (or) NSKE 5% is recommended.",
+    "page_reference": "253, 258-259"
+  },
+  {
+    "crop": "RICE",
+    "disease_name": "Bacterial leaf blight",
+    "causal_organism": "Xanthomonas oryzae pv oryzae",
+    "symptoms_english": "Causes seedling blight in the nursery and the 'Kresek' phase (seedling death) 1-2 weeks after transplanting. Leaves show water-soaked lesions at the tip that progress along the margins in a wavy pattern, turning straw-coloured. The entire leaf blights, and bacterial ooze forms an encrustation on the surface.",
+    "cause_english": "Clipping of tip of the seedling at the time of transplanting; Heavy rain, heavy dew, flooding, deep irrigation water ;Severe wind and temperature of 25-30 C; Application of excessive nitrogen, especially late top dressing",
+    "remedy_english": "Two sprays of Copper hydroxide 77 WP@1.25 kg/ha 30 DAP & 45 DAP. Botanical/others: Spray fresh cowdung extract 20% twice (starting from initial appearance of the disease and another at fortnightly interval). Neem oil 60 EC 3% (or) NSKE 5% is recommended.",
+    "page_reference": "253-254, 259"
+  },
+  {
+    "crop": "RICE",
+    "disease_name": "Rice Tungro Disease (RTD)",
+    "causal_organism": "Rice tungro virus",
+    "symptoms_english": "Infects both nursery and main field plants, causing stunted growth, reduced tillering, and leaf discolouration (yellow to orange) that starts from the tip downwards. Older leaves develop rusty spots, and earheads are small with ill-filled grains. Transmitted by green leaf hoppers.",
+    "cause_english": "",
+    "remedy_english": "Apply Carbofuran 3G @ 3.5kg at 10 DAS or Spray 2 rounds (10 and 20 DAS) with any one of the following insecticides for 20 cents area Thiamethoxam 25 WDG 8g or Imidacloprid 17.8 SL 8ml. Main Field: Spray Two rounds of any one of the following insecticides Thiamethoxam 25 WDG 100g/ha Imidacloprid 17.8 SL 100ml/ha at 15 and 30 days after transplanting.",
+    "page_reference": "254, 256, 259"
+  },
+  {
+    "crop": "RICE",
+    "disease_name": "Rice Yellow Dwarf Disease",
+    "causal_organism": "Candidatus Phytoplasma",
+    "symptoms_english": "Plants become stunted, pale green, and chlorotic with excessive tillering, resembling a clump of grass. Infected plants remain sterile. Transmitted by green leaf hoppers.",
+    "cause_english": "",
+    "remedy_english": "Cultural method: Plough the stubbles as soon as the crop is harvested to prevent the survival of yellow dwarf pathogen during off-season. Physical methods: Light traps are to be set up to attract and control the leaf hopper vectors as well as to monitor the population. Spray Two rounds of any one of the following insecticides Thiamethoxam 25 WDG 100g/ha Imidacloprid 17.8 SL 100ml/ha at 15 and 30 days after transplanting.",
+    "page_reference": "254, 259"
+  },
+  {
+    "crop": "PEARL MILLET",
+    "disease_name": "Downy mildew or Green ear",
+    "causal_organism": "Sclerospora graminicola",
+    "symptoms_english": "Exhibits two stages: Downy mildew stage (white downy patches on the lower leaf surface which expand, turning the leaf yellow) and Green ear stage (earheads partially or fully convert into green leafy structures).",
+    "cause_english": "Very high humidity (90%); Presence of water on the leaves; Low temperature of 15-25°C favor the formation of sporangiophore and sporangia.",
+    "remedy_english": "Seed treatment with Metalaxyl 6g/kg for the control of downy mildew in endemic areas. Grow downy mildew resistant varieties CO7, WCC 75, CO(Cu)9, TNAU-Cumbu Hybrid-CO9. In the direct sown crop, infested plants should be removed up to 45 days of sowing. Spray any one of the fungicides Metalaxyl + Mancozeb @500 g or Mancozeb 1000g/ha. Integrated management: Seed treatment with Metalaxyl @ 6g/kg of seeds + Seed treatment with Imidacloprid @ 5g/kg of seeds + Removal of downy mildew infected plants up to 45 days of sowing + Spraying of Mancozeb @ 1000g/ha + Spraying of NSKE 5% @ 50% flowering.",
+    "page_reference": "259-262"
+  },
+  {
+    "crop": "PEARL MILLET",
+    "disease_name": "Rust",
+    "causal_organism": "Puccinia penniseti",
+    "symptoms_english": "Presents as brownish-yellow pustules (uredia) on both leaf surfaces, with black teliosori on the leaf and leaf sheath. Brinjal serves as an alternate host.",
+    "cause_english": "Closer spacing ; Presence of abundant brinjal plants and other species of Solanum viz., S.torvum, S. xanthocarpum and S. pubescents.",
+    "remedy_english": "Sowing during December - May result in less incidence. Spray any one of the following fungicides when the initial symptoms of the diseases are noticed: Wettable sulphur 2500g/ha, Mancozeb 1000g/ha, Repeat application 10 days after if necessary. Integrated: Spraying of Mancozeb @ 1000g/ha + Spraying of NSKE 5% @ 50% flowering.",
+    "page_reference": "260, 262"
+  },
+  {
+    "crop": "PEARL MILLET",
+    "disease_name": "Smut",
+    "causal_organism": "Tolyposporium penicillariae",
+    "symptoms_english": "Apparent during grain set; scattered grains on the earhead are replaced by large green to black sori containing a powdery mass of smut spore balls enclosed by a tough wall.",
+    "cause_english": "High relative humidity; Successive cropping with pearlmillet",
+    "remedy_english": "",
+    "page_reference": "260-261"
+  },
+  {
+    "crop": "PEARL MILLET",
+    "disease_name": "Ergot / Sugary disease",
+    "causal_organism": "Claviceps fusiformis",
+    "symptoms_english": "Small droplets of pinkish sticky fluid ooze from the spikelets, turning them black in patches and inhibiting grain formation. The honey dew holds conidia, and infected ovaries later turn into sclerotia.",
+    "cause_english": "",
+    "remedy_english": "Dissolve 1 kg of common salt in 10 litres of water. Drop the seeds into the salt solution. Remove the ergot and sclerotia affected seeds which will float. Wash seeds in fresh water 2 or 3 times to remove the salt on the seeds. Dry the seeds in shade. Treat the seeds with Thiram @ 2g/kg of seed. Spray any one of the fungicides like Carbendazim 500g or Mancozeb 1000g/ha when 5-10% flowers have opened and again at 50% flowering stage.",
+    "page_reference": "261-262"
+  },
+  {
+    "crop": "FINGER MILLET",
+    "disease_name": "Blast",
+    "causal_organism": "Pyricularia grisea",
+    "symptoms_english": "Spindle-shaped spots with brown margins and necrotic grey centers appear on leaves. Stem infection blackens the nodes, causing shrinking and breaking. Earhead infection discolours the neck or rachis, leading to chaffy or partially filled grains.",
+    "cause_english": "",
+    "remedy_english": "Nursery Seed treatment: Thiram 4 g or Captan 4 g or Carbendazim 2 g/kg or Pseudomonas fluorescens @ 10g/kg of seed. Main field: Spray any one of the fungicides Edifenphos 500 ml or Carbendazim 500 g or Iprobenphos(IBP) @ 500 ml/ha. First spray immediately after noticing the symptoms. Second and third sprays at flowering stage at 15 days interval. Foliar spray with Aureofungin sol 100 ppm at 50% earhead emergence followed by a second spray with Mancozeb 1000g/ha or Pseudomonas fluorescens @ 0.2% 10 days later.",
+    "page_reference": "263-264"
+  },
+  {
+    "crop": "FINGER MILLET",
+    "disease_name": "Seedling blight / leaf spot:",
+    "causal_organism": "Helminthosporium nodulosum",
+    "symptoms_english": "Attacks all plant parts, displaying small oval elongated brown spots on leaves which merge to form large dark brown lesions. Spots also form on the culm, leaf sheath, neck, and panicle.",
+    "cause_english": "",
+    "remedy_english": "Nursery Seed treatment: Thiram 4 g or Captan 4 g or Carbendazim 2 g/kg or Pseudomonas fluorescens @ 10g/kg of seed.",
+    "page_reference": "263"
+  },
+  {
+    "crop": "FINGER MILLET",
+    "disease_name": "Mosaic / Mottle streak",
+    "causal_organism": "Finger millet mosaic virus / Finger millet mottle streak virus",
+    "symptoms_english": "Infected leaves show chlorotic streaks. Plants grow stunted and pale, producing small earheads with poorly filled grains. Transmitted by the Jassid vector.",
+    "cause_english": "",
+    "remedy_english": "Rogue out the affected plants. Spray any one of the insecticides like Monocrotophos 36 WSC 700 ml/ha or Methyl dematon 25EC 500 ml/ha on noticing symptoms and repeat twice if necessary at 20 days intervals for control of insect vectors.",
+    "page_reference": "263-264"
+  },
+  {
+    "crop": "MAIZE",
+    "disease_name": "Downy mildew / Crazy top",
+    "causal_organism": "Peranosclerospora sorghi",
+    "symptoms_english": "Leaves show chlorotic streaks and white fungal growth on both surfaces. Plants are stunted, bushy (due to short internodes), and may exhibit leafy growths in the tassel with axillary bud proliferation on the tassel stalk.",
+    "cause_english": "Low temperature (21-33°C); High relative humidity (90 per cent) and drizzling; Young plants are highly susceptible.",
+    "remedy_english": "Seed treatment: Carbendazim @2 g/kg or Thiram @4g/kg or Metalaxyl @ 3 g/kg of seed. Use resistant TNAU maize hybrid CO-6. Rogue out affected plants. Spray Metalaxyl+ Mancozeb @ 1000g, Mancozeb 1000g/ha at 20 days after Sowing.",
+    "page_reference": "264, 266"
+  },
+  {
+    "crop": "MAIZE",
+    "disease_name": "Rust",
+    "causal_organism": "Puccinia sorghi",
+    "symptoms_english": "Brown pustules (uredosori) appear on both leaf surfaces. The alternate host is Oxalis corniunlata.",
+    "cause_english": "Cool temperature and high relative humidity favours the disease",
+    "remedy_english": "Seed treatment: Carbendazim @2 g/kg or Thiram @4g/kg or Metalaxyl @ 3 g/kg of seed.",
+    "page_reference": "265-266"
+  },
+  {
+    "crop": "MAIZE",
+    "disease_name": "Leaf Blight",
+    "causal_organism": "Exserohilum turcicum & Helminthosporium maydis",
+    "symptoms_english": "Turcicum Blight: Oval water-soaked spots in youth mature into characteristic 3 to 15cm cigar-shaped tan lesions with dark sporulation areas, appearing first on lower leaves and spreading upward. Maydis Blight: Small yellowish spots expand to elliptical lesions with straw-coloured centers and reddish-brown margins containing conidia.",
+    "cause_english": "Optimum temperature for the germination of conidia is 8 to 27°C provided with freewater on the leaf; Infection takes place early in the wet season.",
+    "remedy_english": "Seed treatment: Carbendazim @2 g/kg or Thiram @4g/kg or Metalaxyl @ 3 g/kg of seed. Spray Mancozeb or Zineb @2-4 g/litre at 10 days interval after first appearance of the disease.",
+    "page_reference": "265-266"
+  },
+  {
+    "crop": "MAIZE",
+    "disease_name": "Charcoal rot",
+    "causal_organism": "Macrophomina phaseolina",
+    "symptoms_english": "Also called Post Flowering Stalk Rot (PFSR). The stalk shows greyish streaks, the pith shreds, and greyish black sclerotia form on vascular bundles, causing stalks to break near the crown. The crown darkens, root bark shreds, and the root system disintegrates.",
+    "cause_english": "High temperature and low soil moisture (drought) favours the disease",
+    "remedy_english": "Seed treatment: Carbendazim @2 g/kg or Thiram @4g/kg or Metalaxyl @ 3 g/kg of seed. Follow crop rotation. Avoid water stress at flowering time. Avoid nutrient stress. Apply potash @ 80 kg/ha in endemic areas. Soil application of P. fluorescens (or) T. viride @ 2.5 kg/ha + 50 kg of well decomposed FYM or sand at 30 days after sowing.",
+    "page_reference": "265-267"
+  },
+  {
+    "crop": "MAIZE",
+    "disease_name": "Bacterial Stalk rot",
+    "causal_organism": "Erwinia dissolvens",
+    "symptoms_english": "Basal internodes undergo soft rot with a water-soaked appearance and emit a mild sweet fermenting odour. Leaves may wilt and the plant topples in days. Ears and shanks may rot, fail to develop, and hang down.",
+    "cause_english": "",
+    "remedy_english": "Seed treatment: Carbendazim @2 g/kg or Thiram @4g/kg or Metalaxyl @ 3 g/kg of seed.",
+    "page_reference": "266"
+  },
+  {
+    "crop": "REDGRAM",
+    "disease_name": "Wilt",
+    "causal_organism": "Fusarium oxysporum f.sp.udum",
+    "symptoms_english": "Infected plants show gradual wilting, yellowing, and premature drying. The basal stem and root become black. Peeling the root bark reveals black streaks, and vascular tissues are discoloured due to hyphal growth, preventing nutrient uptake and causing death.",
+    "cause_english": "Soil temperature of 17-25°C; Continuous cultivation of redgram in the same field.",
+    "remedy_english": "Seed treatment: Talc formulation of Trichoderma viride @ 4g or P. fluorescens @ 10 g/kg seed (or) Carbendazim 2 g/kg or Thiram @ 4 g/kg. Wilt: P. fluorescens (or) T. viride - 2.5 kg/ha + 50 kg of well decomposed FYM or sand at 30 days after sowing. Root rot: Spot drenching with Carbendazim @ 1 gm/lit",
+    "page_reference": "267-268"
+  },
+  {
+    "crop": "REDGRAM",
+    "disease_name": "Powdery mildew",
+    "causal_organism": "Leveillula taurica",
+    "symptoms_english": "White powdery growth appears in patches on the lower leaf surface, while corresponding upper surfaces turn yellow, leading to premature leaf shedding.",
+    "cause_english": "Dry humid weather following rainfall favours the disease.",
+    "remedy_english": "",
+    "page_reference": "267"
+  },
+  {
+    "crop": "REDGRAM",
+    "disease_name": "Leaf spot",
+    "causal_organism": "Cercospora indica",
+    "symptoms_english": "Leaves show small light brown spots that eventually form shot holes. Lesions also develop on petioles and stems.",
+    "cause_english": "",
+    "remedy_english": "",
+    "page_reference": "268"
+  },
+  {
+    "crop": "REDGRAM",
+    "disease_name": "Sterility mosaic",
+    "causal_organism": "Pigeonpea sterility mosaic virus",
+    "symptoms_english": "Plants are stunted with shortened internodes. Axillary buds grow profusely, making branches crowded at the top and giving a bushy appearance. Leaves are small, crinkled, and exhibit mottling. Transmitted by the Eriophid mite Aceria cajani.",
+    "cause_english": "",
+    "remedy_english": "Rogue out the infected plants in the early stages of growth. Spray Fenazaquin @ 1 ml/lit on 45 and 60 DAS as prophylactic spray.",
+    "page_reference": "268"
+  },
+  {
+    "crop": "BENGALGRAM",
+    "disease_name": "Blight",
+    "causal_organism": "Ascochyta rabiei",
+    "symptoms_english": "Infected leaflets show round or elongated lesions with depressed brown spots and brown margins. Similar spots appear on stems and pods, featuring pycnidia arranged as black dots in concentric circles.",
+    "cause_english": "High rainfall during flowering;Temperature of 20-25°C; Relative humidity of 60%.",
+    "remedy_english": "Seed treatment: Talc formulation of T. viride @4g or P. fluorescens @ 10 g/kg seed (or) Carbendazim @ 2 g/kg or Thiram @ 4 g/kg of seed. Exposure of seed at 40-50°C reduced the survival of A. rabiei by about 40-70 per cent. Spray with Carbendazim at 500 g/ha or Chlorothalonil 1kg/ha Follow crop rotation with cereals.",
+    "page_reference": "269-270"
+  },
+  {
+    "crop": "BENGALGRAM",
+    "disease_name": "Rust",
+    "causal_organism": "Uromyces ciceris-arietini",
+    "symptoms_english": "Small oval, brown powdery lesions initially appear on the lower leaf surface, later spreading to both surfaces. Uredosori cover the leaf, and late in the season, dark teliosori appear.",
+    "cause_english": "",
+    "remedy_english": "Destory weed host. Spray Carbendazim 500 g/ha or Propiconazole 1L/ha",
+    "page_reference": "269-270"
+  },
+  {
+    "crop": "BENGALGRAM",
+    "disease_name": "Wilt",
+    "causal_organism": "Fusarium oxysporum f.sp. Ciceris",
+    "symptoms_english": "Infection happens at seedling or flowering stage, causing upper leaves to droop before the entire plant wilts. Dark brown/black discolouration occurs around the collar region, and black streaks appear below the bark on the stem and roots.",
+    "cause_english": "High soil temperature (above 25°C and high soil moisture favours the disease.",
+    "remedy_english": "Soil application with P. fluorescens @ 2.5 kg/ha + 50 kg of well decomposed FYM or sand.",
+    "page_reference": "269-270"
+  },
+  {
+    "crop": "BLACKGRAM AND GREENGRAM",
+    "disease_name": "Root rot",
+    "causal_organism": "Rhizoctonia bataticola",
+    "symptoms_english": "Drooping and drying of leaves and branches. The basal stem turns brown, root bark shreds, and many black spherical or irregular sclerotia appear in the shredded tissues.",
+    "cause_english": "Day temperature of 30°C; Prolonged dry season followed by irrigation.",
+    "remedy_english": "Seed treatment with Beauveria bassiana + Pseudomonas fluorescens @ 5 g each/kg of seed. Seed treatment with Trichoderma viride 4 g/kg or Pseudomonas fluorescens 10 g/kg. Basal application of zinc sulphate 25 kg/ha. Basal application of neem cake @ 150 kg/ha. Soil application P. fluorescens or T. viride - 2.5 kg/ha + 50 kg of well decomposed FYM or sand at 30 days after sowing. Spot drenching of Carbendazim @ 1 gm/lit",
+    "page_reference": "270-271, 274"
+  },
+  {
+    "crop": "BLACKGRAM AND GREENGRAM",
+    "disease_name": "Powdery mildew",
+    "causal_organism": "Erysiphe polygoni",
+    "symptoms_english": "White powdery growth covers the upper leaf surface, later turning grey and making leaves brown. Severe during flowering and maturity stages.",
+    "cause_english": "Warm humid weather. The disease is severe generally during late kharif and rabi seasons.",
+    "remedy_english": "Spray NSKE 5% or Neem oil 3% twice at 10 days interval from initial disease appearance. Spray Eucalyptus leaf extract 10% at initiation of the disease and 10 days later. Spray Carbendazim 500 g or wettable sulphur 1500g/ha or Propiconazole 500 ml/ha at initiation of the disease and 10 days later",
+    "page_reference": "270-271, 273"
+  },
+  {
+    "crop": "BLACKGRAM AND GREENGRAM",
+    "disease_name": "Leaf spot",
+    "causal_organism": "Cercospora canescens",
+    "symptoms_english": "Small circular to irregular reddish spots appear on leaves, turning grey in the center and causing defoliation in severe cases. Lesions also appear on petioles and stems.",
+    "cause_english": "Humid weather and dense plant population",
+    "remedy_english": "Spray Carbendazim 500 g/ha or Mancozeb 1000g/ha at initiation of the disease and 10 days later.",
+    "page_reference": "271, 273"
+  },
+  {
+    "crop": "BLACKGRAM AND GREENGRAM",
+    "disease_name": "Rust",
+    "causal_organism": "Uromyces phaseoli typical",
+    "symptoms_english": "Reddish-brown pustules (uredosori) heavily cover the lower leaf surface, turning affected leaves yellow.",
+    "cause_english": "Cloudy humid weather, temperature of 21-26° C.Nights with heavy dews.",
+    "remedy_english": "Spray Mancozeb 1000g or wettable sulphur 1500g /ha at initiation of the disease and 10 days later.",
+    "page_reference": "271, 273"
+  },
+  {
+    "crop": "BLACKGRAM AND GREENGRAM",
+    "disease_name": "Yellow mosaic",
+    "causal_organism": "Mungbean yellow mosaic virus (MYMV)",
+    "symptoms_english": "Small irregular yellow patches on leaves enlarge to cover the entire lamina, turning the whole leaf yellow. Pods become small, yellow, and distorted.",
+    "cause_english": "Transmitted by whitefly, Bemisia tabaci under favourable conditions. Summer sown crops are highly susceptible. Weed hosts viz., Croton sparsiflorus, Acalypha indica, Eclipta alba and other legume hosts serve as reservoir for inoculum.",
+    "remedy_english": "Growing resistant varieties such as VBN 4, VBN 6 and VBN 7. Seed treatment with Dimethoate (or) Imidacloprid @ 5 ml/kg. Installation of yellow sticky traps 12 nos/ha. Rogue out the infected plants up to 45 days. Foliar spray of notchi leaf extract 10% at 30 DAS or neem formulation 3 ml/lit Spray methyl demeton 25 EC 500 ml/ha or dimethoate 30 EC 500 ml/ha or thiamethoxam 75 WS 1g/3 lit and repeat after 15 days, if necessary.",
+    "page_reference": "271-273"
+  },
+  {
+    "crop": "BLACKGRAM AND GREENGRAM",
+    "disease_name": "Leaf crinkle",
+    "causal_organism": "Urdbean leaf crinkle virus (ULCV)",
+    "symptoms_english": "Young leaves are puckered and curled. Plants get stunted and bushy, with shortened petioles and internodes. Inflorescences are deformed, and flowers rarely open.",
+    "cause_english": "Presence of weed hosts like Aristolochia bracteata and Digera arvensis. Kharif season crop and continuous cropping of other legumes serve as source of inoculum.",
+    "remedy_english": "Growing resistant varieties such as VBN 4, VBN 6 and VBN 7. Seed treatment with Dimethoate (or) Imidacloprid @ 5 ml/kg. Installation of yellow sticky traps 12 nos/ha. Rogue out the infected plants up to 45 days. Foliar spray of notchi leaf extract 10% at 30 DAS or neem formulation 3 ml/lit Spray methyl demeton 25 EC 500 ml/ha or dimethoate 30 EC 500 ml/ha or thiamethoxam 75 WS 1g/3 lit and repeat after 15 days, if necessary.",
+    "page_reference": "272-273"
+  },
+  {
+    "crop": "COTTON",
+    "disease_name": "Fusarium wilt",
+    "causal_organism": "Fusarium oxysporum f.sp. vasinfectum",
+    "symptoms_english": "Leaves lose turgidity, turn yellow, and fall off, starting from the base upward. The plant wilts and dries. Roots and stems show black streaks in the wood region.",
+    "cause_english": "Soil temperature of 20-30°C. Hot and dry periods followed by rains. Heavy black soils with an alkaline reaction. Increased doses of nitrogen and phosphatic fertilizers. Wounds caused by nematode (Meloidogyne incognita and grubs of Ash weevil (Myllocerus pustulatus).",
+    "remedy_english": "Treat the acid delinted seeds with Carboxin or Carbendazim at 2 g/kg. Remove and burn the infected plant debris in the soil after deep summer ploughing during June-July. Apply increased doses of potash with a balanced dose of nitrogenous and phosphatic fertilizers. Apply heavy doses of farm yard manure or other organic manures @100t/ha. Follow mixed cropping with non-host plants. Grow disease resistant varieties of G. hirsutum and G. barbadense like Varalakshmi, Vijay Pratap, Jayadhar and Verum. Spot drench with Carbendazim 1g/litre. Soil drenching with Trifloxystrobin+Tebuconazole - 0.75g/litre.",
+    "page_reference": "274, 277-278"
+  },
+  {
+    "crop": "COTTON",
+    "disease_name": "Verticillium wilt",
+    "causal_organism": "Verticillium dahliae",
+    "symptoms_english": "Severe stunting. Leaves show vein bronzing, interveinal chlorosis, and scorch-like drying, specifically at the leaf margins and interveinal areas. Infected stems and roots have pinkish discolouration in the wood.",
+    "cause_english": "Low temperature of 15-20°C, Low lying and ill-drained soils, Heavy soils with alkaline reaction, Heavy doses of nitrogenous fertilizers.",
+    "remedy_english": "Follow crop rotation by growing paddy or lucerne or chrysanthemum for 2-3 years. Spot drench with 0.05g/l benomyl or carbendazim 500mg/l Grow disease resistant varieties like Sujatha, Suvin and CBS 156 and tolerant variety like MCU 5 WT.",
+    "page_reference": "275, 278"
+  },
+  {
+    "crop": "COTTON",
+    "disease_name": "Root rot",
+    "causal_organism": "Rhizoctonia solani",
+    "symptoms_english": "Sudden wilting and root decay. Bark on roots and lower stems becomes shredded, bearing numerous sclerotia.",
+    "cause_english": "Dry weather following heavy rains, High soil temperature (35-39°C), Cultivation of favourable hosts like vegetables, Oil seeds and legumes preceding cotton, Wounds caused by ash weevil grubs and nematodes.",
+    "remedy_english": "Cultural Method: Apply Neem cake @ 150 kg/ha to the soil and treat the seeds with talc based T. viride @ 4 g/kg to reduce the root rot incidence. Biological control: Seed treatment with T. viride @ 10 g/kg followed by basal application of zinc sulphate @ 50 kg/ha. Seed treatment with Bacillus (BSC 5) @ 10g/kg followed by soil application @ 2.5 kg/ ha in 250kg of compost at the time of sowing. Seed treatment with Pseudomonas (PF1) @ 10g/kg and soil application @ 2.5 kg/ha in 250 kg of compost at the time of sowing. Chemical: Spot drench Carbendazim @ 1 g/lit at the base of affected plants as well as surrounding healthy plants.",
+    "page_reference": "275, 277-278"
+  },
+  {
+    "crop": "COTTON",
+    "disease_name": "Leaf blight",
+    "causal_organism": "Alternaria macrospora",
+    "symptoms_english": "Brown, round-to-irregular necrotic spots with concentric rings appear on leaves, eventually merging and causing the leaf to wither.",
+    "cause_english": "High humidity; Intermittent rains; Moderate temperature of 25-28° C.",
+    "remedy_english": "Spray any one of the following: Copper Oxychloride 1250g or Mancozeb 1000g or Chlorothalonil 500g/ha or Difenaconazole- 0.05%. or Krexoxym methyl 0.1% Tebuconazole - 1ml/ litre Trifloxystrobin+Tebuconazole - 0.6g/litre 60, 90 and 120 days after sowing. Bacillus subtilis (BSC 5) -0.04% on 60, 90 and 120 days after sowing.",
+    "page_reference": "275-276, 278-279"
+  },
+  {
+    "crop": "COTTON",
+    "disease_name": "Myrothecium leaf spot",
+    "causal_organism": "Myrothecium roridum",
+    "symptoms_english": "Circular spots with grey centers and dark brown margins. The center dries out and falls, leaving a shot hole.",
+    "cause_english": "",
+    "remedy_english": "",
+    "page_reference": "276"
+  },
+  {
+    "crop": "COTTON",
+    "disease_name": "Areolate mildew",
+    "causal_organism": "Ramularia areola",
+    "symptoms_english": "Irregular to angular pale white spots restricted by veinlets appear on the lower leaf surface. They develop frosty white fungal growth, turning leaves chlorotic and yellow.",
+    "cause_english": "Wet humid conditions during winter cotton season; Intermittent rains during Nor th-East monsoon season; Low temperature (20-30°C) during October-January; Close planting, excessive application of nitrogenous fertilizers; Very early sowing or very late sowing of cotton",
+    "remedy_english": "Spray Carbendazim 250 g/ha or Mancozeb 1000g or Chlorothalonil 500g/ha or Difenaconazole- 0.05% or Krexoxym methyl 0.1% or Tebuconazole - 1ml/litre 60, 90 and 120 days after sowing",
+    "page_reference": "276, 279"
+  },
+  {
+    "crop": "COTTON",
+    "disease_name": "Angular leaf spot / Black arm",
+    "causal_organism": "Xanthomonas axonopodis pv. malvacearum",
+    "symptoms_english": "Angular brown/black water-soaked spots restricted by veins on leaves (Angular leaf spot). Blackening of veins with bacterial ooze (Black vein). Elongate black lesions on stems/branches causing breakage (Black arm). Round, sunken, black water-soaked lesions on bolls causing premature opening and yellowing of lint (Boll rot).",
+    "cause_english": "Optimum soil temperature of 28°C; High atmospheric temperature of 30-40°C; Relative humidity of 85 per cent, early sowing, ;Delayed thinning; Poor tillage, late irrigation; Potassium deficiency in soil ; Rain followed by bright sunshine during the months of October and November are highly favorable.",
+    "remedy_english": "Avoid stacking of infected plants Spray Streptomycin sulphate + Tetracycline mixture 100g + Copper oxychloride 1250g/ha. Repeat spraying at 10 days interval twice or thrice if drizzling continues Boll rot Spray any one of the following: Carbendazim 500g or Mancozeb 2000g or Copper oxychloride 2500g/ha along with an insecticide recommended for bollworm from 45th day at fortnightly interval.",
+    "page_reference": "276-277, 279"
+  },
+  {
+    "crop": "SUGARCANE",
+    "disease_name": "Red rot",
+    "causal_organism": "Colletotrichum falcatum",
+    "symptoms_english": "Circular to oval spots with red margins and straw-coloured centers appear on the midrib, often bearing black acervuli. Infected leaves break at these spots. Inside the canes, tissues turn red with white cross patches, and the stalks become hollow.",
+    "cause_english": "Monoculturing of sugarcane; Successive ratoon cropping; Water logged conditions and injuries caused by insects;",
+    "remedy_english": "Growing of Recommended resistant and moderately resistant varieties viz., Co86249, CoSi95071, CoG 93076, CoC 22, CoSi 6 and CoG 5 Adopt sett treatment With Carbendazim before planting (Carbendazim 50 WP, @ 0.05% or Carbendazim 25 DS @ 0.1% along with 1.0% Urea for 5 minutes) the Irrigation interval in a red rot affected field must be lengthened. Removal of the affected Clumps at an early stage and soil drenching with 0.1% Carbandazim 50 WP or 0.25% lime. The trash of red rot affected field after harvest may be uniformly spread And Burnt The red rot affected field must be rotated with rice for one season and Other crops for two seasons. The setts should be soaked in 0.1% Carbendazim or 0.05% Triademefon for 15 minutes.",
+    "page_reference": "279-282"
+  },
+  {
+    "crop": "SUGARCANE",
+    "disease_name": "Sett rot or Pineapple disease",
+    "causal_organism": "Ceratocystis paradoxa",
+    "symptoms_english": "Affects planted setts, turning the central core black. Cavities form inside the setts, and the rotting tissue emits an odour resembling pineapple.",
+    "cause_english": "Poorly drained fields; Heavy clay soils ; Temperature of 25-30°C; Prolonged rainfall after planting.",
+    "remedy_english": "Select healthy setts for planting.",
+    "page_reference": "280, 282"
+  },
+  {
+    "crop": "SUGARCANE",
+    "disease_name": "Whip smut",
+    "causal_organism": "Ustilago scitaminea",
+    "symptoms_english": "Plants are stunted, and the central shoot turns into a long, curved, whip-like sorus covered by a silvery membrane that eventually ruptures to expose a dark mass of teliospores.",
+    "cause_english": "Monoculturing of sugarcane; Continuous ratooning and dry weather during tillering stage.",
+    "remedy_english": "Growing of resistant and moderately resistant varieties viz., Co 86249, CoG 93076, CoC 22, CoSi6 and CoG 5. Sett treatment with fungicides viz., Triadimefon @ 0.1% or Carbendazim @ 0.1% for 10 minutes. Treating the seed setts with Aerated Steam Therapy (AST) at 50°C for 1 hour or in hot water at 50°C for 30 minutes or at 52°C for 18 minutes. Removal of smut whips with gunny bags/polythene bag and burnt. Discourage ratooning of the diseased crops having more than 10 per cent infection.",
+    "page_reference": "280, 282"
+  },
+  {
+    "crop": "SUGARCANE",
+    "disease_name": "Mosaic",
+    "causal_organism": "Sugarcane mosaic potyvirus",
+    "symptoms_english": "Prominent on young leaves, displaying linear chlorotic stripes alternating with dark green areas. Yellow stripes later emerge on leaf sheaths and stalks. Transmitted by infected setts and the aphid Raphalosiphum maidis.",
+    "cause_english": "",
+    "remedy_english": "Select healthy setts for planting.",
+    "page_reference": "280-282"
+  },
+  {
+    "crop": "SUGARCANE",
+    "disease_name": "Grassy shoot Disease(GSD)",
+    "causal_organism": "Candidatus phytoplasma",
+    "symptoms_english": "Infected setts produce numerous lanky tillers with narrow, pale green to white leaves. Shortened internodes make the plant look overly bushy. Transmitted by aphids (Melanaphis sacchari, Rhaphalosiphum maidis).",
+    "cause_english": "",
+    "remedy_english": "Treat setts with aerated steam at 50°C for one hour to control primary infection of grassy shoot disease. Clumps infected by grassy shoot, smut and ratoon stunting diseases should be immediately uprooted and destroyed.",
+    "page_reference": "281-283"
+  },
+  {
+    "crop": "SUGARCANE",
+    "disease_name": "Phanerogamic parasite",
+    "causal_organism": "Striga spp.",
+    "symptoms_english": "A partial root parasite with chlorophyll-bearing leaves attaches to sugarcane roots via haustoria, stealing nutrients and water, thereby stunting the cane.",
+    "cause_english": "",
+    "remedy_english": "Regular weeding and intercultural operation during early stages of parasite growth. Spray Fernoxone (sodium salt of 2, 4-D) at 450g/500 litre of water.",
+    "page_reference": "281-282"
+  },
+  {
+    "crop": "GROUNDNUT",
+    "disease_name": "Early leaf spot",
+    "causal_organism": "Cercopora arachidicola",
+    "symptoms_english": "Circular to irregular reddish-brown to dark brown spots encircled by a bright yellow halo appear on the upper leaf surface, with light brown lesions on the lower surface.",
+    "cause_english": "Prolonged high relative humidity for 3 days Low temperature (20 C) with dew on leaf surface; Heavy doses of nitrogen andphosporus fertilizers; Deficiency of magesium in soil.",
+    "remedy_english": "Seed treatment: Treat the seeds with any one of the following Thiram @ 4g/kg of seed or Mancozeb @ 4g/kg of seed or Carboxin @ 2g/kg of seed or Carbendazim @ 2g/kg of seed or Talc formulation of T. viride @ 4g/kg of seed or P. fluorescens @ 10g/kg of seed. Spray any one of the following: Carbendazim 500 g/ha or Mancozeb 1000g/ha or Chlorothalonil 1000 g/ha. If necessary give the second round 15 days later.",
+    "page_reference": "283-286"
+  },
+  {
+    "crop": "GROUNDNUT",
+    "disease_name": "Late leaf spot",
+    "causal_organism": "Phaeoisariopsis personata",
+    "symptoms_english": "Leaves show numerous dark, small circular scattered spots. The lower surface of the lesion turns carbonaceous black. Black elongated lesions appear on petioles and stems, and spotted leaves shed prematurely.",
+    "cause_english": "Prolonged high relative humidity for 3 days Low temperature (20 C) with dew on leaf surface; Heavy doses of nitrogen andphosporus fertilizers; Deficiency of magesium in soil.",
+    "remedy_english": "Spray any one of the following: Carbendazim 500 g/ha or Mancozeb 1000g/ha or Chlorothalonil 1000 g/ha. If necessary give the second round 15 days later.",
+    "page_reference": "283-286"
+  },
+  {
+    "crop": "GROUNDNUT",
+    "disease_name": "Rust",
+    "causal_organism": "Puccinia arachidis",
+    "symptoms_english": "Leaflets show many small powdery pustules (uredosori) on the lower surface, with corresponding yellow then brown discolouration on the upper surface. Severe infection causes leaf drying and shedding. Pustules also occur on petioles and stems.",
+    "cause_english": "High relative humidity (above 85 per cent); Heavy rainfall.Low temperature (20-25°C).",
+    "remedy_english": "Combined infection of rust and Leaf spot: Spray 10% Calotropis leaf extract or Spray Carbendazim 250 g + Mancozeb 1000g/ha or Chlorothalonil 1000g/ha. Rust: Spray any one of the following: Mancozeb 1000g/ha or Chlorothalonil 1000g/ha or Wettable sulphur 2500g/ha or Tridemorph 500 ml/ha",
+    "page_reference": "284-286"
+  },
+  {
+    "crop": "GROUNDNUT",
+    "disease_name": "Collar rot / Seedling blight / Crown rot",
+    "causal_organism": "Aspergillus niger and A. pulverulentum",
+    "symptoms_english": "Causes both pre- and post-emergence rot. Post-emergence, young seedlings have brown spots on cotyledons and the collar region, which becomes soft, rots, and shows fungal growth. Adult plants develop large brown stem lesions, wilt, and droop (Crown rot).",
+    "cause_english": "",
+    "remedy_english": "Crop rotation. Destruction of plant debris. Remove and destroy previous season's infested crop debris in the field Seed treatment with Trichoderma viride / T.harzianum @ 4 g/kg of seeds and soil application of Trichoderma viride / T.harzianum at 2.5kg/ha, preferably with organic amendments such as castor cake or neem cake or mustard cake @ 500 kg/ha.",
+    "page_reference": "284, 286"
+  },
+  {
+    "crop": "GROUNDNUT",
+    "disease_name": "Root rot",
+    "causal_organism": "Macrophomina phaseolina",
+    "symptoms_english": "Reddish-brown discolouration occurs on the stem near the soil. Leaves and branches droop and wilt. White mycelial growth appears, root bark gets shredded, and large numbers of sclerotia form inside.",
+    "cause_english": "Prolonged rainy season at seedling stage and Low lying areas.",
+    "remedy_english": "Soil application of P. fluorescens @ 2.5g/ha mixed with 50 kg of well decomposed FYM / sand at 30 DAS. Spot drench with Carbendazim 1 g/1",
+    "page_reference": "285-286"
+  },
+  {
+    "crop": "GROUNDNUT",
+    "disease_name": "Ring mosaic / Bud necrosis / Bud blight",
+    "causal_organism": "Groundnut bud necrosis virus",
+    "symptoms_english": "Leaves show mottling, ring spotting, size reduction, and malformation. Leaves turn narrow with necrotic lesions. Stems show streaks, buds undergo necrosis, and plants stunt. Transmitted by thrips.",
+    "cause_english": "",
+    "remedy_english": "Adopt a close spacing of 15 x 15 cm. Remove infected plants up to 6 weeks after sowing and spray Monocrotophos 36 WSC 500 ml/ha, 30 days after sowing either alone or in combination with antiviral principles. Antiviral principles from sorghum or coconut leaves (Two sprays at 10 and 20 days after sowing).",
+    "page_reference": "285-287"
+  },
+  {
+    "crop": "SUNFLOWER",
+    "disease_name": "Leaf blight",
+    "causal_organism": "Alternaria helianthi",
+    "symptoms_english": "Circular brown spots with concentric rings and yellow halos appear on leaves, later coalescing into large irregular patches causing leaf drying. Spots also affect sepals, petals, and stems.",
+    "cause_english": "Rainy weather; Cool winter climate; Late sown crops are highly susceptible.",
+    "remedy_english": "Seed treatment: Treat the seeds with any one of the following: T. viride @ 4g/kg of seed, Thiram @ 4g/kg of seed, Carbendazim @ 2g/kg of seed. Spray Mancozeb 1000g/ha",
+    "page_reference": "287-289"
+  },
+  {
+    "crop": "SUNFLOWER",
+    "disease_name": "Rust",
+    "causal_organism": "Puccinia helianthi",
+    "symptoms_english": "Many scattered or grouped reddish-brown powdery pustules (uredosori) form on the lower leaf surface, particularly on the bottom leaves.",
+    "cause_english": "Day temperature of 25.5° to 30.5°C with Relative humidity of 86 to 92 per cent enhances intensity of rust attack.",
+    "remedy_english": "Seed treatment: Treat the seeds with any one of the following: T. viride @ 4g/kg of seed, Thiram @ 4g/kg of seed, Carbendazim @ 2g/kg of seed. Spray Mancozeb 1000g/ha",
+    "page_reference": "287-289"
+  },
+  {
+    "crop": "SUNFLOWER",
+    "disease_name": "Head rot",
+    "causal_organism": "Rhizopus sp.",
+    "symptoms_english": "Water-soaked lesions on the lower head surface turn brown. The head becomes pulpy, soft, and putrefies, turning seeds into a black mass. The head withers and remains unfilled.",
+    "cause_english": "Prolonged rainy weather at flowering ;Damages caused by insects and caterpillars.",
+    "remedy_english": "Spray Mancozeb 1000g/ha in case of intermittent rainfall at the head stage, directing the spray to cover the capitulum.Repeat fungicidal application after 10 days if humid weather continues",
+    "page_reference": "288-289"
+  },
+  {
+    "crop": "SUNFLOWER",
+    "disease_name": "Root rot or charcoal rot",
+    "causal_organism": "Macrophomina phaseolina",
+    "symptoms_english": "Leaves droop and dry. The lower stem and root bark shreds into threads, filled with many sclerotia. Pycnidia also appear on the stem.",
+    "cause_english": "",
+    "remedy_english": "Soil application of P. fluorescens or T. viride -2.5 Kg/ha + 50 Kg of well decomposed FYM or sand at 30 days after sowing. Spot drenching with Carbendazim @ 1 gm/litre.",
+    "page_reference": "288-289"
+  },
+  {
+    "crop": "SUNFLOWER",
+    "disease_name": "Sunflower necrosis disease -Tobacco streak virus (TSV)",
+    "causal_organism": "",
+    "symptoms_english": "Sudden necrosis of part of the leaf lamina followed by leaf twisting and systemic mosaic. Necrosis affects lamina, petiole, stem, floral calyx, and corolla. Transmitted by thrips.",
+    "cause_english": "",
+    "remedy_english": "Raise sorghum as border crop (One month prior to sunflower sowing). Imidacloprid seed treatment 2g/kg % Imidacloprid foliar spray at 30 & 45 DAS",
+    "page_reference": "288-289"
+  },
+  {
+    "crop": "GINGELLY",
+    "disease_name": "Root rot (Charcoal rot)",
+    "causal_organism": "Macrophomina phaseolina",
+    "symptoms_english": "Brown discolouration on the stem near the soil. Leaves yellow and droop, causing plants to die in patches. Bark shreds in stems and roots, with dark brown sclerotia and pycnidia appearing.",
+    "cause_english": "Day temperature of 30°C and above; Prolonged drought followed by copious irrigation.",
+    "remedy_english": "Seed treatment: Treat the seeds with any one of the following P. fluorescens @ 10g/kg of seed, T. viride @ 4 g/kg of seed, Thiram @ 4g/kg of seed, Carbendazim @ 2g/kg of seed. Soil application of P. fluorescens or T. viride - 2.5 Kg/ha + 50 Kg of well decomposed FYM or sand at 30 days after sowing. Spot drench Carbendazim - 1 gm/litre",
+    "page_reference": "289-291"
+  },
+  {
+    "crop": "GINGELLY",
+    "disease_name": "Leaf blight",
+    "causal_organism": "Alternaria sesame",
+    "symptoms_english": "Round to irregular necrotic spots with concentric centers appear, merging to cause overall leaf blight.",
+    "cause_english": "",
+    "remedy_english": "Spray Mancozeb 1000g/ha",
+    "page_reference": "290-291"
+  },
+  {
+    "crop": "GINGELLY",
+    "disease_name": "Powdery mildew",
+    "causal_organism": "Erysiphe cichoracearum",
+    "symptoms_english": "White powdery fungal growth covers the upper leaf surface, often blanketing the entire lamina and malforming leaves in severe infections.",
+    "cause_english": "Dry humid weather; Low relative humidity.",
+    "remedy_english": "Apply any one of the following.Sulphur dust 25 kg/ha or Wettable sulphur 25 kg/ha",
+    "page_reference": "290-291"
+  },
+  {
+    "crop": "GINGELLY",
+    "disease_name": "Phyllody",
+    "causal_organism": "Candidatus Phytoplasma",
+    "symptoms_english": "Floral parts are mutated into green leafy, phylloid structures. Leaves cluster at the axils and terminals, making the plant look bushy. Transmitted by the jassid vector Orosius albicinctus.",
+    "cause_english": "",
+    "remedy_english": "Remove and destroy infected plants. To control vector, spray Monocrotophos 36 or Dimethoate 30 EC 500 ml/ha combined with intercropping of Sesamum + Redgram (6: 1)",
+    "page_reference": "290-291"
+  }
+]
