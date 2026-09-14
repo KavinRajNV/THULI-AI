@@ -46,6 +46,11 @@ async def lifespan(app: FastAPI):
         print("✅ MongoDB URI loaded")
 
     load_all_datasets()
+    
+    # Initialize Disease RAG (BGE-M3 + FAISS)
+    from services.disease_service import init_models
+    init_models()
+    
     start_scheduler()
     print("✅ All datasets loaded. Scheduler running.")
     yield
