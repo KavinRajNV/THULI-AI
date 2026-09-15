@@ -176,12 +176,12 @@ def load_all_datasets():
     if not CROP_REC_DF.empty:
         print(f"   ✅ Crop_recommendation: {len(CROP_REC_DF)} rows")
 
-    # Reservoir 3-year history
-    RESERVOIR_DF = _safe_read_csv(os.path.join(BASE, "reservoir_data_3years.csv"))
+    # Reservoir 10-year history
+    RESERVOIR_DF = _safe_read_csv(os.path.join(BASE, "tn_reservoir_10years_19dams.csv"))
     if not RESERVOIR_DF.empty:
         if "date" in RESERVOIR_DF.columns:
             RESERVOIR_DF["date"] = pd.to_datetime(RESERVOIR_DF["date"], errors="coerce")
-        print(f"   ✅ reservoir_data_3years: {len(RESERVOIR_DF)} rows")
+        print(f"   ✅ tn_reservoir_10years_19dams: {len(RESERVOIR_DF)} rows")
 
     # Dam irrigation dataset (JSON)
     try:
