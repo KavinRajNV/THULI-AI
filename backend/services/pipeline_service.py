@@ -38,7 +38,7 @@ async def build_context(farmer_text: str, farmer_profile: dict) -> dict:
     elif "fertilizer" in intents:
         if district:
             tasks["soil"] = asyncio.to_thread(soil_service.get_soil_data, district)
-            tasks["fertilizer"] = asyncio.to_thread(fertilizer_service.get_recommendation, district, crop)
+            tasks["fertilizer"] = asyncio.to_thread(fertilizer_service.get_recommendation, district, crop, days)
 
     elif "crop_recommend" in intents:
         if district:
