@@ -59,6 +59,8 @@ async def text_chat(request: Request, body: dict):
         await farmer_service.update_farmer(phone, {"language": language})
         farmer["language"] = language
 
+    from services import call_service, flag_service
+    flags = []
     if not farmer.get("onboarding_complete"):
         response_text, updates = get_onboarding_response(farmer, message)
         if updates:
@@ -70,6 +72,14 @@ async def text_chat(request: Request, body: dict):
 
     await farmer_service.save_conversation_turn(phone, "farmer", message)
     await farmer_service.save_conversation_turn(phone, "kisan", response_text)
+
+    # Persist as a call for the admin dashboard (Web chats are treated as calls)
+    await call_service.start_call(phone, phone, farmer.get("district"), farmer.get("village"))
+    await call_service.append_transcript(phone, "farmer", message)
+    await call_service.append_transcript(phone, "kisan", response_text)
+    
+    if flags:
+        await flag_service.create_flags(flags, phone, farmer.get("district"), farmer.get("village"), None)
 
     audio_url = await _safe_tts(response_text, request)
 
@@ -95,6 +105,16 @@ async def voice_chat(request: Request, audio: UploadFile,
         district=farmer.get("district")
     )
 
+    from services import call_service, flag_service
+    import time
+    
+    os.makedirs("static/calls", exist_ok=True)
+    ts = int(time.time())
+    farmer_audio_path = f"static/calls/{phone}_farmer_{ts}.webm"
+    with open(farmer_audio_path, "wb") as f:
+        f.write(audio_bytes)
+        
+    flags = []
     if not farmer.get("onboarding_complete"):
         response_text, updates = get_onboarding_response(farmer, transcript)
         if updates:
@@ -106,6 +126,14 @@ async def voice_chat(request: Request, audio: UploadFile,
 
     await farmer_service.save_conversation_turn(phone, "farmer", transcript)
     await farmer_service.save_conversation_turn(phone, "kisan", response_text)
+
+    # Persist as a call for the admin dashboard
+    await call_service.start_call(phone, phone, farmer.get("district"), farmer.get("village"))
+    await call_service.append_transcript(phone, "farmer", transcript, farmer_audio_path)
+    await call_service.append_transcript(phone, "kisan", response_text)
+
+    if flags:
+        await flag_service.create_flags(flags, phone, farmer.get("district"), farmer.get("village"), farmer_audio_path)
 
     # TTS with timeout — NEVER block the response
     audio_url = await _safe_tts(response_text, request)
