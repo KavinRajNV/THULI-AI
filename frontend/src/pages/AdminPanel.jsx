@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Users, PhoneCall, MapPin, Bell, Droplets, Search, RefreshCw, ChevronRight, Phone, Globe, AlertTriangle, ArrowDownRight, ArrowUpRight } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 const API = import.meta.env.VITE_API_URL || ''
 
@@ -177,10 +178,10 @@ export default function AdminPanel() {
                 <p className="text-[10px] text-gray-400 mt-1">Occurrences: {f.occurrence_count} | Calls: {f.distinct_calls_count}</p>
               </div>
               <div className="flex gap-2">
-                <a href={`/admin/flags/${encodeURIComponent(f.term)}/${encodeURIComponent(f.district)}`}
+                <Link to={`/admin/flags/${encodeURIComponent(f.term)}/${encodeURIComponent(f.district)}`}
                    className="px-4 py-1.5 bg-green-50 text-green-700 rounded-lg text-xs font-medium hover:bg-green-100 transition-colors">
                   View & Validate
-                </a>
+                </Link>
               </div>
             </div>
           )) : <div className="bg-white rounded-xl border p-6 text-center text-sm text-gray-400">No pending flags.</div>}

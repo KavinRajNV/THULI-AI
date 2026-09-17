@@ -1,5 +1,6 @@
 """
 routers/alerts.py — Alert management endpoints.
+Migrated from MongoDB to PostgreSQL (SQLAlchemy async).
 """
 
 import os
@@ -8,7 +9,9 @@ from datetime import datetime
 import httpx
 from fastapi import APIRouter
 
-from services.db import farmers_col, alert_log_col, dam_status_col
+from sqlalchemy import select, desc
+from database import async_session
+from models import Farmer, AlertLog, DamStatus
 from services import ai_service
 
 router = APIRouter()
@@ -33,29 +36,33 @@ async def trigger_alert(body: dict):
     if not district or not message:
         return {"error": "district and message required"}
 
-    # Find farmers in this district
-    farmers = await farmers_col.find(
-        {"district": {"$regex": district, "$options": "i"}}
-    ).to_list(length=500)
+    async with async_session() as session:
+        # Find farmers in this district
+        result = await session.execute(
+            select(Farmer).where(Farmer.district.ilike(f"%{district}%"))
+        )
+        farmers = result.scalars().all()
 
-    results = []
-    for farmer in farmers:
-        phone = farmer.get("phone", "")
-        if not phone:
-            continue
+        results = []
+        for farmer in farmers:
+            phone = farmer.phone
+            if not phone:
+                continue
 
-        # Try Exotel outbound call
-        success = await _make_outbound_call(phone, message)
-        results.append({"phone": phone, "success": success})
+            # Try Exotel outbound call
+            success = await _make_outbound_call(phone, message)
+            results.append({"phone": phone, "success": success})
 
-    # Log the alert
-    await alert_log_col.insert_one({
-        "district": district,
-        "message": message,
-        "alert_type": alert_type,
-        "farmers_contacted": len(results),
-        "triggered_at": datetime.utcnow(),
-    })
+        # Log the alert
+        alert = AlertLog(
+            district=district,
+            message=message,
+            alert_type=alert_type,
+            farmers_contacted=len(results),
+            triggered_at=datetime.utcnow(),
+        )
+        session.add(alert)
+        await session.commit()
 
     return {
         "status": "sent",
@@ -72,31 +79,34 @@ async def check_alert_conditions():
     """
     potential_alerts = []
 
-    # Check dam conditions
-    today_str = datetime.utcnow().strftime("%Y-%m-%d")
-    dams = await dam_status_col.find({"date": today_str}).to_list(length=50)
+    async with async_session() as session:
+        today_str = datetime.utcnow().strftime("%Y-%m-%d")
+        result = await session.execute(
+            select(DamStatus).where(DamStatus.date == today_str)
+        )
+        dams = result.scalars().all()
 
-    for dam in dams:
-        storage_pct = dam.get("storage_percentage", 0)
-        outflow = dam.get("current_outflow_cusecs", 0)
+        for dam in dams:
+            storage_pct = dam.storage_percentage or 0
+            outflow = dam.current_outflow_cusecs or 0
 
-        if storage_pct and storage_pct < 20:
-            potential_alerts.append({
-                "type": "low_storage",
-                "reservoir": dam.get("reservoir"),
-                "storage_pct": storage_pct,
-                "severity": "warning",
-                "message": f"{dam.get('reservoir')} storage critically low at {storage_pct}%",
-            })
+            if storage_pct and storage_pct < 20:
+                potential_alerts.append({
+                    "type": "low_storage",
+                    "reservoir": dam.reservoir,
+                    "storage_pct": storage_pct,
+                    "severity": "warning",
+                    "message": f"{dam.reservoir} storage critically low at {storage_pct}%",
+                })
 
-        if outflow and outflow > 5000:
-            potential_alerts.append({
-                "type": "high_outflow",
-                "reservoir": dam.get("reservoir"),
-                "outflow": outflow,
-                "severity": "alert",
-                "message": f"{dam.get('reservoir')} releasing {outflow} cusecs — high flow alert",
-            })
+            if outflow and outflow > 5000:
+                potential_alerts.append({
+                    "type": "high_outflow",
+                    "reservoir": dam.reservoir,
+                    "outflow": outflow,
+                    "severity": "alert",
+                    "message": f"{dam.reservoir} releasing {outflow} cusecs — high flow alert",
+                })
 
     return {"potential_alerts": potential_alerts, "checked_at": datetime.utcnow().isoformat()}
 

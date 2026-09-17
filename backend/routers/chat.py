@@ -155,5 +155,5 @@ async def reset_session(body: dict):
 @router.get("/api/farmer/{phone}")
 async def get_farmer_profile(phone: str):
     f = await farmer_service.get_or_create_farmer(phone)
-    f.pop("_id", None)
+    # No need to pop _id (no MongoDB ObjectId)
     return f

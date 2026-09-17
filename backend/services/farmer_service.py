@@ -5,39 +5,81 @@ Handles ALL Tamil number variants Whisper produces.
 
 import re
 from datetime import datetime
-from services.db import farmers_col
+from sqlalchemy import select, insert, update, delete
+from database import async_session
+from models import Farmer, ConversationTurn
 from services.location_service import resolve_location, extract_pincode, extract_district_name
 
 # ─── CRUD ─────────────────────────────────────────────────────────────
 
 async def get_or_create_farmer(phone: str) -> dict:
-    farmer = await farmers_col.find_one({"phone": phone})
-    if not farmer:
-        farmer = {
-            "phone": phone, "pincode": None, "district": None, "village": None,
-            "lat": None, "lon": None,
-            "primary_crop": None, "sowing_date": None, "days_after_sowing": None,
-            "language": "tamil", "onboarding_complete": False,
-            "conversation_history": [], "last_called": None,
-            "created_at": datetime.utcnow(),
-        }
-        await farmers_col.insert_one(farmer)
-    return farmer
+    async with async_session() as session:
+        result = await session.execute(select(Farmer).where(Farmer.phone == phone))
+        farmer = result.scalars().first()
+        if not farmer:
+            farmer = Farmer(
+                phone=phone,
+                language="tamil",
+                onboarding_complete=False,
+                created_at=datetime.utcnow()
+            )
+            session.add(farmer)
+            await session.commit()
+            await session.refresh(farmer)
+            
+        farmer_dict = farmer.to_dict()
+        
+        turns_result = await session.execute(
+            select(ConversationTurn)
+            .where(ConversationTurn.farmer_id == farmer.id)
+            .order_by(ConversationTurn.timestamp.asc())
+        )
+        turns = turns_result.scalars().all()
+        farmer_dict["conversation_history"] = [
+            {"role": t.role, "content": t.content, "timestamp": t.timestamp} for t in turns
+        ]
+        return farmer_dict
 
 async def update_farmer(phone: str, updates: dict):
-    await farmers_col.update_one({"phone": phone}, {"$set": updates})
+    async with async_session() as session:
+        if 'lat' in updates and 'lon' in updates and updates['lat'] is not None and updates['lon'] is not None:
+            updates['geom'] = f"SRID=4326;POINT({updates['lon']} {updates['lat']})"
+        stmt = update(Farmer).where(Farmer.phone == phone).values(**updates)
+        await session.execute(stmt)
+        await session.commit()
 
 async def save_conversation_turn(phone: str, role: str, content: str):
-    await farmers_col.update_one(
-        {"phone": phone},
-        {"$push": {"conversation_history": {
-            "$each": [{"role": role, "content": content, "timestamp": datetime.utcnow()}],
-            "$slice": -10,
-        }}, "$set": {"last_called": datetime.utcnow()}},
-    )
+    async with async_session() as session:
+        result = await session.execute(select(Farmer).where(Farmer.phone == phone))
+        farmer = result.scalars().first()
+        if not farmer:
+            return
+            
+        new_turn = ConversationTurn(
+            farmer_id=farmer.id,
+            role=role,
+            content=content,
+            timestamp=datetime.utcnow()
+        )
+        session.add(new_turn)
+        farmer.last_called = datetime.utcnow()
+        
+        turns_result = await session.execute(
+            select(ConversationTurn)
+            .where(ConversationTurn.farmer_id == farmer.id)
+            .order_by(ConversationTurn.timestamp.asc())
+        )
+        turns = turns_result.scalars().all()
+        if len(turns) >= 10:
+            for t in turns[:len(turns)-9]:
+                await session.delete(t)
+                
+        await session.commit()
 
 async def reset_farmer(phone: str):
-    await farmers_col.delete_one({"phone": phone})
+    async with async_session() as session:
+        await session.execute(delete(Farmer).where(Farmer.phone == phone))
+        await session.commit()
 
 
 # ─── COMPREHENSIVE Tamil number mapping ───────────────────────────────

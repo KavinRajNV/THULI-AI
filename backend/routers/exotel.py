@@ -26,9 +26,6 @@ EXOTEL_VIRTUAL_NUMBER = os.getenv("EXOTEL_VIRTUAL_NUMBER", "")
 BASE_URL = os.getenv("BASE_URL", "http://localhost:8000")
 
 
-
-
-
 @router.post("/exotel/incoming")
 async def incoming_call(
     CallSid: str = Form(...),

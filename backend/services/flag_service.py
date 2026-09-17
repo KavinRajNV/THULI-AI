@@ -3,7 +3,9 @@ services/flag_service.py — Save and manage uncertain regional flags.
 """
 import unicodedata
 from datetime import datetime
-from services.db import flags_col, regional_dictionary_col
+from sqlalchemy import select, insert
+from database import async_session
+from models import Flag, RegionalDictionary
 
 def normalize_term(term: str) -> str:
     """Normalize term for grouping."""
@@ -38,7 +40,10 @@ async def create_flags(flags: list, call_id: str, district: str, village: str, t
         })
 
     if docs:
-        await flags_col.insert_many(docs)
+        async with async_session() as session:
+            await session.execute(insert(Flag), docs)
+            await session.commit()
+            
         # Trigger background validation for each unique term in this batch
         import asyncio
         from services.validation_agent import process_pending_flag_group
@@ -50,8 +55,13 @@ async def get_dictionary_for_district(district: str) -> list:
     """Fetch verified or pending-audit regional terms for a district."""
     if not district:
         return []
-    cursor = regional_dictionary_col.find({
-        "district": district,
-        "status": {"$in": ["verified", "ai-verified-pending-audit"]}
-    })
-    return await cursor.to_list(length=100)
+        
+    async with async_session() as session:
+        result = await session.execute(
+            select(RegionalDictionary).where(
+                RegionalDictionary.district == district,
+                RegionalDictionary.status.in_(["verified", "ai-verified-pending-audit"])
+            )
+        )
+        dicts = result.scalars().all()
+        return [{"term": d.term, "standard_meaning": d.standard_meaning} for d in dicts]

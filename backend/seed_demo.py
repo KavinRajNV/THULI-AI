@@ -1,5 +1,5 @@
 """
-seed_demo.py — ONE-TIME demo data seeder.
+seed_demo.py — ONE-TIME demo data seeder for PostgreSQL.
 Run: python seed_demo.py
 Safe to re-run (checks marker).
 """
@@ -7,14 +7,18 @@ import asyncio, os
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 load_dotenv()
-from motor.motor_asyncio import AsyncIOMotorClient
 
-client = AsyncIOMotorClient(os.getenv("MONGODB_URI"))
-db = client.kisan_ai
+from sqlalchemy import select
+from sqlalchemy.dialects.postgresql import insert as pg_insert
+from database import async_session
+from models import DamStatus, Farmer, ConversationTurn, AlertLog, SystemMeta
+
 MARKER = "DEMO_SEED_V2"
 
 async def is_seeded():
-    return await db.system_flags.find_one({"_id": MARKER}) is not None
+    async with async_session() as session:
+        result = await session.execute(select(SystemMeta).where(SystemMeta.key == MARKER))
+        return result.scalars().first() is not None
 
 def _ts(h):
     return datetime.utcnow() - timedelta(hours=h)
@@ -69,66 +73,41 @@ FARMERS = [
         {"role":"farmer","content":"நெல். 45 நாள் ஆகிறது.","timestamp":_ts(71)},
         {"role":"kisan","content":"அருமை! Thanjavur - rice, 45 நாள். கேள்வி கேளுங்கள்!","timestamp":_ts(71)},
         {"role":"farmer","content":"என் நெல் வயலுக்கு இன்று தண்ணீர் பாய்ச்சலாமா?","timestamp":_ts(2)},
-        {"role":"kisan","content":"நாளை மழை வாய்ப்பு உள்ளது. இன்று நீர்ப்பாசனம் செய்ய வேண்டாம். மேட்டூர் அணையில் நாற்பத்தி நான்கு சதவீதம் நீர் உள்ளது.","timestamp":_ts(2)},
-        {"role":"farmer","content":"இந்த வாரம் எவ்வளவு உரம் பயன்படுத்த வேண்டும்?","timestamp":_ts(2)},
-        {"role":"kisan","content":"நாற்பத்தி ஐந்து நாள் நெல் பயிருக்கு யூரியா ஐம்பது கிலோ ஒரு ஏக்கருக்கு போடுங்கள்.","timestamp":_ts(2)},
-        {"role":"farmer","content":"அடுத்த பருவத்தில் எந்தப் பயிரை பயிரிடலாம்?","timestamp":_ts(1)},
-        {"role":"kisan","content":"தஞ்சாவூர் மண்ணுக்கு ஏற்ற அடுத்த பயிர்: உளுந்து, எள், கம்பு.","timestamp":_ts(1)},
+        {"role":"kisan","content":"நாளை மழை வாய்ப்பு உள்ளது. இன்று நீர்ப்பாசனம் செய்ய வேண்டாம்.","timestamp":_ts(2)},
      ]},
     {"phone":"+919894736521","district":"Ramanathapuram","village":"Paramakudi","primary_crop":"sugarcane","days_after_sowing":60,
      "language":"tamil","onboarding_complete":True,"channel":"exotel","last_called":_ts(5),"created_at":_ts(120),
      "conversation_history":[
         {"role":"farmer","content":"கரும்பு பயிருக்கு தண்ணீர் போடணுமா?","timestamp":_ts(5)},
-        {"role":"kisan","content":"அறுபது நாள் கரும்புக்கு நீர் தேவை அதிகம். வைகை அணையில் மூன்று சதவீதம் மட்டுமே நீர் உள்ளது.","timestamp":_ts(5)},
+        {"role":"kisan","content":"அறுபது நாள் கரும்புக்கு நீர் தேவை அதிகம்.","timestamp":_ts(5)},
      ]},
     {"phone":"+919843276510","district":"Madurai","village":"Melur","primary_crop":"rice","days_after_sowing":30,
      "language":"tamil","onboarding_complete":True,"channel":"exotel","last_called":_ts(8),"created_at":_ts(96),
      "conversation_history":[
         {"role":"farmer","content":"இலைகள் மஞ்சளாக மாறுகின்றன","timestamp":_ts(8)},
-        {"role":"kisan","content":"நைட்ரஜன் குறைபாடாக இருக்கலாம். யூரியா இருபத்தைந்து கிலோ போடுங்கள்.","timestamp":_ts(8)},
+        {"role":"kisan","content":"நைட்ரஜன் குறைபாடாக இருக்கலாம்.","timestamp":_ts(8)},
      ]},
     {"phone":"+919443267890","district":"Krishnagiri","village":"Hosur","primary_crop":"tomato","days_after_sowing":25,
      "language":"tamil","onboarding_complete":True,"channel":"exotel","last_called":_ts(12),"created_at":_ts(200),
-     "conversation_history":[
-        {"role":"farmer","content":"தக்காளியில் பூச்சி தாக்குதல்","timestamp":_ts(12)},
-        {"role":"kisan","content":"வெள்ளை ஈ தாக்குதலாக இருக்கலாம். நிம் எண்ணெய் தெளிக்கவும்.","timestamp":_ts(12)},
-     ]},
+     "conversation_history":[]},
     {"phone":"+919791452380","district":"Salem","village":"Attur","primary_crop":"maize","days_after_sowing":35,
      "language":"tamil","onboarding_complete":True,"channel":"exotel","last_called":_ts(14),"created_at":_ts(180),
-     "conversation_history":[
-        {"role":"farmer","content":"மக்காச்சோளத்திற்கு உரம் எவ்வளவு?","timestamp":_ts(14)},
-        {"role":"kisan","content":"யூரியா நாற்பது கிலோ ஒரு ஏக்கருக்கு போடுங்கள்.","timestamp":_ts(14)},
-     ]},
+     "conversation_history":[]},
     {"phone":"+919865143270","district":"Erode","village":"Gobichettipalayam","primary_crop":"sugarcane","days_after_sowing":90,
      "language":"tamil","onboarding_complete":True,"channel":"exotel","last_called":_ts(18),"created_at":_ts(240),
-     "conversation_history":[
-        {"role":"farmer","content":"கரும்பு அறுவடை எப்போது?","timestamp":_ts(18)},
-        {"role":"kisan","content":"இன்னும் ஆறு மாதம் ஆகும்.","timestamp":_ts(18)},
-     ]},
+     "conversation_history":[]},
     {"phone":"+919487523610","district":"Coimbatore","village":"Pollachi","primary_crop":"cotton","days_after_sowing":50,
      "language":"tamil","onboarding_complete":True,"channel":"exotel","last_called":_ts(20),"created_at":_ts(150),
-     "conversation_history":[
-        {"role":"farmer","content":"பருத்தியில் பூச்சி இருக்கு","timestamp":_ts(20)},
-        {"role":"kisan","content":"அமெரிக்கன் புழு இருக்கலாம். பூச்சிக்கொல்லி தெளிக்கவும்.","timestamp":_ts(20)},
-     ]},
+     "conversation_history":[]},
     {"phone":"+919976384521","district":"Tirunelveli","village":"Ambasamudram","primary_crop":"rice","days_after_sowing":20,
      "language":"tamil","onboarding_complete":True,"channel":"exotel","last_called":_ts(6),"created_at":_ts(100),
-     "conversation_history":[
-        {"role":"farmer","content":"நாளை மழை வருமா?","timestamp":_ts(6)},
-        {"role":"kisan","content":"நாளை மழை வாய்ப்பு உள்ளது. நீர்ப்பாசனம் வேண்டாம்.","timestamp":_ts(6)},
-     ]},
+     "conversation_history":[]},
     {"phone":"+919842753961","district":"Vellore","village":"Vaniyambadi","primary_crop":"groundnut","days_after_sowing":40,
      "language":"tamil","onboarding_complete":True,"channel":"exotel","last_called":_ts(24),"created_at":_ts(160),
-     "conversation_history":[
-        {"role":"farmer","content":"நிலக்கடலை விளைச்சல் எவ்வளவு?","timestamp":_ts(24)},
-        {"role":"kisan","content":"சராசரி விளைச்சல் ஒரு ஏக்கருக்கு எட்டு குவிண்டால்.","timestamp":_ts(24)},
-     ]},
+     "conversation_history":[]},
     {"phone":"+919952146380","district":"Dindigul","village":"Oddanchatram","primary_crop":"rice","days_after_sowing":55,
      "language":"tamil","onboarding_complete":True,"channel":"exotel","last_called":_ts(3),"created_at":_ts(130),
-     "conversation_history":[
-        {"role":"farmer","content":"மேட்டூர் அணை நிலவரம்?","timestamp":_ts(3)},
-        {"role":"kisan","content":"மேட்டூர் அணையில் நாற்பத்தி நான்கு சதவீதம் நீர் உள்ளது. நீர் திறப்பு நடந்துக்கொண்டிருக்கிறது.","timestamp":_ts(3)},
-     ]},
+     "conversation_history":[]},
     {"phone":"+919600845231","district":"Namakkal","primary_crop":None,"days_after_sowing":None,
      "language":"tamil","onboarding_complete":False,"channel":"exotel","last_called":_ts(48),"created_at":_ts(48),
      "conversation_history":[]},
@@ -137,22 +116,13 @@ FARMERS = [
      "conversation_history":[]},
     {"phone":"+919787412563","district":"Tiruppur","village":"Udumalpet","primary_crop":"cotton","days_after_sowing":70,
      "language":"tamil","onboarding_complete":True,"channel":"exotel","last_called":_ts(30),"created_at":_ts(210),
-     "conversation_history":[
-        {"role":"farmer","content":"பருத்தி விலை எவ்வளவு?","timestamp":_ts(30)},
-        {"role":"kisan","content":"சந்தை விலை பற்றிய தகவல் இல்லை. உள்ளூர் சந்தையில் விசாரியுங்கள்.","timestamp":_ts(30)},
-     ]},
+     "conversation_history":[]},
     {"phone":"+919894521736","district":"Cuddalore","village":"Chidambaram","primary_crop":"rice","days_after_sowing":15,
      "language":"tamil","onboarding_complete":True,"channel":"exotel","last_called":_ts(10),"created_at":_ts(80),
-     "conversation_history":[
-        {"role":"farmer","content":"நெல் நாற்று நட்டாச்சு","timestamp":_ts(10)},
-        {"role":"kisan","content":"பதினைந்து நாள் நாற்றுக்கு தண்ணீர் நிலையாக வைக்கவும்.","timestamp":_ts(10)},
-     ]},
+     "conversation_history":[]},
     {"phone":"+919443198267","district":"Nagapattinam","village":"Mayiladuthurai","primary_crop":"rice","days_after_sowing":80,
      "language":"tamil","onboarding_complete":True,"channel":"exotel","last_called":_ts(16),"created_at":_ts(190),
-     "conversation_history":[
-        {"role":"farmer","content":"அறுவடை எப்போது?","timestamp":_ts(16)},
-        {"role":"kisan","content":"இன்னும் முப்பது நாளில் அறுவடை செய்யலாம்.","timestamp":_ts(16)},
-     ]},
+     "conversation_history":[]},
 ]
 
 ALERTS = [
@@ -162,36 +132,87 @@ ALERTS = [
      "triggered_at":_ts(6)},
     {"district":"Thanjavur","reservoir":"Mettur",
      "reason":"Outflow exceeds 1000 cusecs","alert_type":"auto_dam",
-     "message":"மேட்டூர் அணையிலிருந்து ஆயிரம் கன அடி நீர் திறக்கப்பட்டுள்ளது. கால்வாய் விவசாயிகள் தயாராக இருங்கள்.",
+     "message":"மேட்டூர் அணையிலிருந்து ஆயிரம் கன அடி நீர் திறக்கப்பட்டுள்ளது.",
      "triggered_at":_ts(3)},
 ]
 
 async def seed():
     if await is_seeded():
-        print("Already seeded. To re-seed, run in MongoDB:")
-        print("  db.system_flags.deleteOne({_id:'DEMO_SEED_V2'})")
-        print("  db.farmers.deleteMany({channel:'exotel'})")
-        print("  db.dam_status.deleteMany({})")
-        print("  db.alert_log.deleteMany({})")
+        print("Already seeded. To re-seed, run in PostgreSQL:")
+        print("  DELETE FROM system_meta WHERE key = 'DEMO_SEED_V2';")
+        print("  DELETE FROM farmers WHERE channel = 'exotel';")
+        print("  DELETE FROM dam_status;")
+        print("  DELETE FROM alert_log;")
         return
-    print("Seeding...")
-    for d in DAM_DATA:
-        d["scraped_at"] = datetime.utcnow()
-        await db.dam_status.update_one({"reservoir":d["reservoir"],"date":d["date"]},{"$set":d},upsert=True)
-    print(f"  {len(DAM_DATA)} dam records")
-    n = 0
-    for f in FARMERS:
-        f.setdefault("sowing_date",None); f.setdefault("lat",None); f.setdefault("lon",None)
-        f.setdefault("pincode",None); f.setdefault("village",None)
-        if not await db.farmers.find_one({"phone":f["phone"]}):
-            await db.farmers.insert_one(f); n += 1
-    print(f"  {n} farmers")
-    for a in ALERTS:
-        await db.alert_log.insert_one(a)
-    print(f"  {len(ALERTS)} alerts")
-    await db.system_flags.update_one({"_id":MARKER},{"$set":{"at":datetime.utcnow()}},upsert=True)
-    t = await db.farmers.count_documents({})
-    print(f"Done! Total farmers: {t}")
+
+    print("Seeding PostgreSQL...")
+
+    async with async_session() as session:
+        # Seed dam data
+        for d in DAM_DATA:
+            d["scraped_at"] = datetime.utcnow()
+            stmt = pg_insert(DamStatus).values(**d)
+            stmt = stmt.on_conflict_do_update(
+                constraint="uq_dam_reservoir_date",
+                set_={k: v for k, v in d.items() if k not in ("reservoir", "date")}
+            )
+            await session.execute(stmt)
+        print(f"  {len(DAM_DATA)} dam records")
+
+        # Seed farmers
+        n = 0
+        for f_data in FARMERS:
+            conversation_history = f_data.pop("conversation_history", [])
+            f_data.setdefault("sowing_date", None)
+            f_data.setdefault("lat", None)
+            f_data.setdefault("lon", None)
+            f_data.setdefault("pincode", None)
+            f_data.setdefault("village", None)
+
+            # Check if farmer exists
+            result = await session.execute(
+                select(Farmer).where(Farmer.phone == f_data["phone"])
+            )
+            existing = result.scalars().first()
+            if not existing:
+                farmer = Farmer(**f_data)
+                session.add(farmer)
+                await session.flush()  # Get the farmer.id
+
+                # Insert conversation turns
+                for turn in conversation_history:
+                    ct = ConversationTurn(
+                        farmer_id=farmer.id,
+                        role=turn["role"],
+                        content=turn["content"],
+                        timestamp=turn["timestamp"],
+                    )
+                    session.add(ct)
+                n += 1
+        print(f"  {n} farmers")
+
+        # Seed alerts
+        for a in ALERTS:
+            alert = AlertLog(**a)
+            session.add(alert)
+        print(f"  {len(ALERTS)} alerts")
+
+        # Set seed marker
+        stmt = pg_insert(SystemMeta).values(
+            key=MARKER, value={"at": datetime.utcnow().isoformat()}
+        ).on_conflict_do_update(
+            index_elements=["key"],
+            set_={"value": {"at": datetime.utcnow().isoformat()}}
+        )
+        await session.execute(stmt)
+
+        await session.commit()
+
+    # Count total farmers
+    async with async_session() as session:
+        from sqlalchemy import func
+        total = (await session.execute(select(func.count(Farmer.id)))).scalar()
+        print(f"Done! Total farmers: {total}")
 
 if __name__ == "__main__":
     asyncio.run(seed())

@@ -6,7 +6,10 @@ import re, os
 from datetime import datetime
 import httpx, pandas as pd
 from bs4 import BeautifulSoup
-from services.db import dam_status_col
+from sqlalchemy import select
+from sqlalchemy.dialects.postgresql import insert as pg_insert
+from database import async_session
+from models import DamStatus
 import data.loader
 
 # Dam name variants (Tamil + English + Tanglish)
@@ -30,22 +33,28 @@ def extract_dam_name(text):
 
 
 async def get_dam_by_name(dam_name):
-    """Fetch dam data directly by name from MongoDB."""
-    status = await dam_status_col.find_one(
-        {"reservoir": {"$regex": dam_name, "$options": "i"}},
-        sort=[("date", -1)])
+    """Fetch dam data directly by name from PostgreSQL."""
+    async with async_session() as session:
+        result = await session.execute(
+            select(DamStatus)
+            .where(DamStatus.reservoir.ilike(f"%{dam_name}%"))
+            .order_by(DamStatus.date.desc())
+            .limit(1)
+        )
+        status = result.scalars().first()
+        
     if not status:
         return None
     trend = analyze_dam_trend(dam_name)
     return {
         "dam_name": dam_name,
-        "storage_pct": status.get("storage_percentage"),
-        "inflow": status.get("current_inflow_cusecs"),
-        "outflow": status.get("current_outflow_cusecs"),
-        "current_storage_mcft": status.get("current_storage_mcft"),
-        "full_capacity_mcft": status.get("full_capacity_mcft"),
-        "last_year_storage_mcft": status.get("last_year_storage_mcft"),
-        "data_date": status.get("date"),
+        "storage_pct": status.storage_percentage,
+        "inflow": status.current_inflow_cusecs,
+        "outflow": status.current_outflow_cusecs,
+        "current_storage_mcft": status.current_storage_mcft,
+        "full_capacity_mcft": status.full_capacity_mcft,
+        "last_year_storage_mcft": status.last_year_storage_mcft,
+        "data_date": status.date,
         "historical": trend,
         "historical_note": trend.get("note", ""),
     }
@@ -125,17 +134,40 @@ async def scrape_dam_data():
         soup = BeautifulSoup(r.text,"html.parser"); table = soup.find("table")
         if not table: return []
         results = []
-        for row in table.find_all("tr"):
-            cells = row.find_all("td")
-            if len(cells)<9: continue
-            raw = re.sub(r"\*+","",cells[0].get_text(strip=True)).strip()
-            fc = _sf(cells[2].get_text()); cs = _sf(cells[4].get_text())
-            sp = round(cs/fc*100,1) if fc and fc>0 and cs else 0
-            rec = {"reservoir":raw,"date":today,"full_capacity_mcft":fc,"current_storage_mcft":cs,
-                "current_inflow_cusecs":_sf(cells[5].get_text()),"current_outflow_cusecs":_sf(cells[6].get_text()),
-                "storage_percentage":sp,"scraped_at":datetime.utcnow()}
-            await dam_status_col.update_one({"reservoir":rec["reservoir"],"date":today},{"$set":rec},upsert=True)
-            results.append(rec)
+        async with async_session() as session:
+            for row in table.find_all("tr"):
+                cells = row.find_all("td")
+                if len(cells)<9: continue
+                raw = re.sub(r"\*+","",cells[0].get_text(strip=True)).strip()
+                fc = _sf(cells[2].get_text()); cs = _sf(cells[4].get_text())
+                sp = round(cs/fc*100,1) if fc and fc>0 and cs else 0
+                rec = {"reservoir":raw,"date":today,"full_capacity_mcft":fc,"current_storage_mcft":cs,
+                    "current_inflow_cusecs":_sf(cells[5].get_text()),"current_outflow_cusecs":_sf(cells[6].get_text()),
+                    "storage_percentage":sp,"scraped_at":datetime.utcnow()}
+                
+                stmt = pg_insert(DamStatus).values(
+                    reservoir=raw,
+                    date=today,
+                    full_capacity_mcft=fc,
+                    current_storage_mcft=cs,
+                    current_inflow_cusecs=_sf(cells[5].get_text()),
+                    current_outflow_cusecs=_sf(cells[6].get_text()),
+                    storage_percentage=sp,
+                    scraped_at=datetime.utcnow()
+                ).on_conflict_do_update(
+                    index_elements=['date', 'reservoir'],
+                    set_={
+                        'full_capacity_mcft': fc,
+                        'current_storage_mcft': cs,
+                        'current_inflow_cusecs': _sf(cells[5].get_text()),
+                        'current_outflow_cusecs': _sf(cells[6].get_text()),
+                        'storage_percentage': sp,
+                        'scraped_at': datetime.utcnow()
+                    }
+                )
+                await session.execute(stmt)
+                results.append(rec)
+            await session.commit()
         print(f"Scraped {len(results)} dams")
         return results
     except Exception as e:

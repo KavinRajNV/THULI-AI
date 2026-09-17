@@ -5,7 +5,10 @@ Uses lat/lon provided by the farmer profile, falling back to district centroids.
 """
 from datetime import datetime, timedelta
 import httpx
-from services.db import weather_cache_col
+from sqlalchemy import select
+from sqlalchemy.dialects.postgresql import insert as pg_insert
+from database import async_session
+from models import WeatherCache
 import data.loader
 
 async def get_weather(district: str = None, lat: float = None, lon: float = None) -> dict:
@@ -42,11 +45,13 @@ async def get_weather(district: str = None, lat: float = None, lon: float = None
     cache_key = f"openmeteo_{round(lat, 2)}_{round(lon, 2)}"
 
     try:
-        cached = await weather_cache_col.find_one({"_id": cache_key})
-        if cached and cached.get("cached_at"):
-            if datetime.utcnow() - cached["cached_at"] < timedelta(hours=6):
-                print(f"🌤️ Open-Meteo cache hit: {cache_key}")
-                return cached.get("data", {})
+        async with async_session() as session:
+            result = await session.execute(select(WeatherCache).where(WeatherCache.cache_key == cache_key))
+            cached = result.scalars().first()
+            if cached and cached.cached_at:
+                if datetime.utcnow() - cached.cached_at < timedelta(hours=6):
+                    print(f"🌤️ Open-Meteo cache hit: {cache_key}")
+                    return cached.data
     except Exception as e:
         print(f"⚠️ Cache: {e}")
 
@@ -101,9 +106,19 @@ async def get_weather(district: str = None, lat: float = None, lon: float = None
                 }
                 
         try:
-            await weather_cache_col.update_one(
-                {"_id": cache_key}, {"$set": {"data": result, "cached_at": datetime.utcnow()}}, upsert=True)
-        except: pass
+            async with async_session() as session:
+                stmt = pg_insert(WeatherCache).values(
+                    cache_key=cache_key,
+                    data=result,
+                    cached_at=datetime.utcnow()
+                ).on_conflict_do_update(
+                    index_elements=['cache_key'],
+                    set_={'data': result, 'cached_at': datetime.utcnow()}
+                )
+                await session.execute(stmt)
+                await session.commit()
+        except Exception as e:
+            print(f"⚠️ Cache write error: {e}")
         
         print(f"✅ Open-Meteo Weather: rain={result.get('today',{}).get('rainfall_mm')}mm")
         return result

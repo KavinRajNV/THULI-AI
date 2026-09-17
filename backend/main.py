@@ -39,11 +39,22 @@ async def lifespan(app: FastAPI):
     else:
         print(f"✅ Groq API key loaded ({groq_key[:8]}...)")
 
-    mongo_uri = os.getenv("MONGODB_URI", "")
-    if not mongo_uri or mongo_uri == "your_mongodb_atlas_uri_here":
-        print("❌ WARNING: MONGODB_URI is not set!")
+    db_url = os.getenv("DATABASE_URL", "")
+    if not db_url:
+        print("❌ WARNING: DATABASE_URL is not set! Database will fail.")
     else:
-        print("✅ MongoDB URI loaded")
+        print("✅ PostgreSQL DATABASE_URL loaded")
+
+    # Verify PostgreSQL connection
+    try:
+        from database import engine
+        from sqlalchemy import text
+        async with engine.connect() as conn:
+            result = await conn.execute(text("SELECT 1"))
+            result.fetchone()
+        print("✅ PostgreSQL connected successfully")
+    except Exception as e:
+        print(f"❌ PostgreSQL connection failed: {e}")
 
     load_all_datasets()
     
@@ -55,6 +66,8 @@ async def lifespan(app: FastAPI):
     print("✅ All datasets loaded. Scheduler running.")
     yield
     # --- Shutdown ---
+    from database import engine
+    await engine.dispose()
     print("🛑 KISAN.AI shutting down.")
 
 
@@ -99,6 +112,7 @@ async def root():
         "version": "1.0.0",
         "docs": "/docs",
         "status": "running",
+        "database": "PostgreSQL",
     }
 
 

@@ -5,7 +5,11 @@ import os
 import json
 import asyncio
 import google.generativeai as genai
-from services.db import flags_col, regional_dictionary_col, calls_col
+from sqlalchemy import select, update
+from sqlalchemy.orm import selectinload
+from sqlalchemy.dialects.postgresql import insert as pg_insert
+from database import async_session
+from models import Flag, Call, RegionalDictionary
 from datetime import datetime
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
@@ -16,37 +20,41 @@ else:
     gemini_model = None
     print("❌ GEMINI_API_KEY missing. Validation agent disabled.")
 
-
 async def process_pending_flag_group(normalized_term: str, district: str):
     """Run validation agent on a group of pending flags."""
     if not gemini_model:
         return None
 
-    # Fetch all pending occurrences
-    occurrences = await flags_col.find({
-        "normalized_term": normalized_term,
-        "district": district,
-        "status": "pending"
-    }).to_list(length=10)
+    async with async_session() as session:
+        result = await session.execute(
+            select(Flag).where(
+                Flag.normalized_term == normalized_term,
+                Flag.district == district,
+                Flag.status == "pending"
+            ).limit(10)
+        )
+        occurrences = result.scalars().all()
 
-    if not occurrences:
-        return None
+        if not occurrences:
+            return None
 
-    # Gather transcripts
-    context_blocks = []
-    for occ in occurrences:
-        call = await calls_col.find_one({"call_id": occ["call_id"]})
-        if call and call.get("transcript"):
-            transcript_text = "\n".join([f"{t['role'].upper()}: {t['content']}" for t in call["transcript"]])
-            context_blocks.append(f"--- Call from Village {occ.get('village', 'Unknown')} ---\n{transcript_text}")
+        context_blocks = []
+        for occ in occurrences:
+            call_result = await session.execute(
+                select(Call).options(selectinload(Call.transcript_turns)).where(Call.call_id == occ.call_id)
+            )
+            call = call_result.scalars().first()
+            if call and call.transcript_turns:
+                transcript_text = "\n".join([f"{t.role.upper()}: {t.content}" for t in call.transcript_turns])
+                context_blocks.append(f"--- Call from Village {occ.village or 'Unknown'} ---\n{transcript_text}")
 
-    if not context_blocks:
-        return None
+        if not context_blocks:
+            return None
 
-    prompt = f"""You are an expert in Tamil Nadu agricultural dialects and linguistics.
+        prompt = f"""You are an expert in Tamil Nadu agricultural dialects and linguistics.
 A regional or unclear term was flagged in a farmer's conversation.
 
-Term: '{occurrences[0]['term']}'
+Term: '{occurrences[0].term}'
 District: {district}
 
 Here are the transcripts where this term was used:
@@ -58,63 +66,76 @@ Provide a JSON response with:
 2. "confidence": A number from 0 to 100 representing your confidence.
 3. "reasoning": A brief explanation of how you deduced it from context.
 """
-    try:
-        response = await asyncio.to_thread(
-            gemini_model.generate_content,
-            prompt,
-            generation_config=genai.GenerationConfig(response_mime_type="application/json")
-        )
-        result = json.loads(response.text)
-        
-        proposed_meaning = result.get("meaning")
-        confidence = result.get("confidence", 0)
+        try:
+            response = await asyncio.to_thread(
+                gemini_model.generate_content,
+                prompt,
+                generation_config=genai.GenerationConfig(response_mime_type="application/json")
+            )
+            result_json = json.loads(response.text)
+            
+            proposed_meaning = result_json.get("meaning")
+            confidence = result_json.get("confidence", 0)
 
-        # Update the pending flags with the AI's proposal
-        await flags_col.update_many(
-            {"_id": {"$in": [occ["_id"] for occ in occurrences]}},
-            {"$set": {
-                "ai_proposed_meaning": proposed_meaning,
-                "ai_confidence": confidence,
-                "status": "ai-processed"
-            }}
-        )
+            occ_ids = [occ.id for occ in occurrences]
+            await session.execute(
+                update(Flag).where(Flag.id.in_(occ_ids)).values(
+                    ai_proposed_meaning=proposed_meaning,
+                    ai_confidence=confidence,
+                    status="ai-processed"
+                )
+            )
+            await session.commit()
 
-        # Check for auto-promotion
-        # Count how many distinct calls resulted in this SAME meaning with confidence > 80
-        if confidence >= 80:
-            similar_processed = await flags_col.find({
-                "normalized_term": normalized_term,
-                "district": district,
-                "ai_proposed_meaning": proposed_meaning,
-                "ai_confidence": {"$gte": 80}
-            }).to_list(length=100)
+            if confidence >= 80:
+                sim_result = await session.execute(
+                    select(Flag.call_id).where(
+                        Flag.normalized_term == normalized_term,
+                        Flag.district == district,
+                        Flag.ai_proposed_meaning == proposed_meaning,
+                        Flag.ai_confidence >= 80
+                    ).limit(100)
+                )
+                similar_calls = sim_result.scalars().all()
+                distinct_calls = set(similar_calls)
+                
+                if len(distinct_calls) >= 3:
+                    await promote_to_dictionary(normalized_term, district, proposed_meaning, confidence, "ai-verified-pending-audit")
 
-            distinct_calls = set([doc["call_id"] for doc in similar_processed])
-            if len(distinct_calls) >= 3:
-                # Auto-promote!
-                await promote_to_dictionary(normalized_term, district, proposed_meaning, confidence, "ai-verified-pending-audit")
-
-        return result
-    except Exception as e:
-        print(f"❌ Validation Agent Error: {e}")
-        return None
+            return result_json
+        except Exception as e:
+            print(f"❌ Validation Agent Error: {e}")
+            return None
 
 
 async def promote_to_dictionary(term: str, district: str, meaning: str, confidence: int, status: str):
     """Upsert term into regional dictionary and mark flags as resolved."""
-    # Insert or update dictionary
-    await regional_dictionary_col.update_one(
-        {"term": term, "district": district},
-        {"$set": {
-            "standard_meaning": meaning,
-            "status": status,
-            "last_confirmed_confidence": confidence,
-            "updated_at": datetime.utcnow()
-        }, "$inc": {"occurrence_count": 1}, "$setOnInsert": {"created_at": datetime.utcnow()}},
-        upsert=True
-    )
-    # Mark all related flags as resolved
-    await flags_col.update_many(
-        {"normalized_term": term, "district": district},
-        {"$set": {"status": "resolved"}}
-    )
+    async with async_session() as session:
+        stmt = pg_insert(RegionalDictionary).values(
+            term=term,
+            district=district,
+            standard_meaning=meaning,
+            status=status,
+            last_confirmed_confidence=confidence,
+            occurrence_count=1,
+            created_at=datetime.utcnow(),
+            updated_at=datetime.utcnow()
+        ).on_conflict_do_update(
+            index_elements=['district', 'term'],
+            set_={
+                'standard_meaning': meaning,
+                'status': status,
+                'last_confirmed_confidence': confidence,
+                'updated_at': datetime.utcnow(),
+                'occurrence_count': RegionalDictionary.occurrence_count + 1
+            }
+        )
+        await session.execute(stmt)
+        
+        await session.execute(
+            update(Flag).where(
+                Flag.normalized_term == term,
+                Flag.district == district
+            ).values(status="resolved")
+        )
+        await session.commit()
