@@ -33,11 +33,11 @@ async def _safe_tts(text: str, request: Request) -> str | None:
     try:
         aid = uuid.uuid4().hex[:12]
         wav = f"static/{aid}.wav"
-        await asyncio.wait_for(
+        output_path = await asyncio.wait_for(
             ai_service.text_to_speech(text, wav),
             timeout=10.0,
         )
-        return _audio_url(request, wav)
+        return _audio_url(request, output_path) if os.path.exists(output_path) else None
     except asyncio.TimeoutError:
         print("⚠️ TTS timed out (10s)")
         return None
@@ -66,7 +66,7 @@ async def text_chat(request: Request, body: dict):
             farmer.update(updates)
     else:
         context = await pipeline_service.build_context(message, farmer)
-        response_text = await ai_service.get_kisan_response(message, farmer, context)
+        response_text, flags = await ai_service.get_kisan_response(message, farmer, context)
 
     await farmer_service.save_conversation_turn(phone, "farmer", message)
     await farmer_service.save_conversation_turn(phone, "kisan", response_text)
@@ -92,6 +92,7 @@ async def voice_chat(request: Request, audio: UploadFile,
     transcript = await ai_service.transcribe_audio(
         audio_bytes, audio.content_type or "audio/webm",
         audio.filename or "recording.webm", language=language,
+        district=farmer.get("district")
     )
 
     if not farmer.get("onboarding_complete"):
@@ -101,7 +102,7 @@ async def voice_chat(request: Request, audio: UploadFile,
             farmer.update(updates)
     else:
         context = await pipeline_service.build_context(transcript, farmer)
-        response_text = await ai_service.get_kisan_response(transcript, farmer, context)
+        response_text, flags = await ai_service.get_kisan_response(transcript, farmer, context)
 
     await farmer_service.save_conversation_turn(phone, "farmer", transcript)
     await farmer_service.save_conversation_turn(phone, "kisan", response_text)

@@ -27,7 +27,7 @@ export default function ChatBubble({ message }) {
           ? 'bg-kisan-600 text-white rounded-2xl rounded-tr-md'
           : 'bg-white text-gray-800 rounded-2xl rounded-tl-md shadow-sm border border-gray-100'
       }`}>
-        {message.content}
+        {typeof message.content === 'string' ? message.content : JSON.stringify(message.content)}
         {!isFarmer && message.audioUrl && (
           <button onClick={playAudio}
             className="mt-2 flex items-center gap-1.5 text-xs text-kisan-600 hover:text-kisan-700">

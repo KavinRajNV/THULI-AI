@@ -9,6 +9,8 @@ import openai
 
 SARVAM_API_KEY = os.getenv("SARVAM_API_KEY", "")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+PRIMARY_MODEL = os.getenv("GROQ_PRIMARY_MODEL", "openai/gpt-oss-120b")
+FALLBACK_MODEL = os.getenv("GROQ_FALLBACK_MODEL", "openai/gpt-oss-20b")
 
 if not GROQ_API_KEY or GROQ_API_KEY == "your_groq_key_here":
     print("❌ GROQ_API_KEY missing!")
@@ -40,21 +42,37 @@ def check_rate_limit():
 
 SYSTEM_PROMPT = """You are KISAN.AI, an agricultural intelligence engine for Tamil Nadu farmers.
 
-RULE 1 — LANGUAGE:
+RULE 1 — JSON OUTPUT ONLY:
+You MUST output your response in JSON format.
+{
+  "reply": "Your response to the farmer here in the requested language (Tamil, English, Tanglish)",
+  "flagged_terms": [
+    {
+      "term": "the exact word you did not understand",
+      "reason": "short <15 words reason",
+      "confidence_in_meaning": 0.2
+    }
+  ]
+}
+If there are no uncertain terms, return an empty array for flagged_terms.
+IMPORTANT: Bias toward over-flagging! If you hear a word that might be a regional dialect, or you are unsure of its exact agricultural meaning in this context, FLAG IT. 
+An unnecessary flag is better than answering incorrectly.
+
+RULE 2 — LANGUAGE:
 Detect the farmer's language from <question>. Reply in SAME language.
 Tamil → Tamil. English → English. Tanglish → Tamil script.
 
-RULE 2 — STATELESS:
+RULE 3 — STATELESS:
 This is the FIRST and ONLY question. You have NO memory of previous questions.
 Do NOT refer to any prior topic.
 
-RULE 3 — USE ONLY <data>:
+RULE 4 — USE ONLY <data>:
 Answer MUST be based on values inside <data> tags.
 Quote exact numbers. If <data> says rain=12mm, say "பன்னிரண்டு மில்லி மழை".
 If <data> says "not available", say "இந்தத் தகவல் தற்போது கிடைக்கவில்லை" and STOP.
 NEVER invent numbers. NEVER give generic advice when <data> has specifics.
 
-RULE 4 — SINGLE TOPIC:
+RULE 5 — SINGLE TOPIC:
 <intent> tells you the topic. Answer ONLY that topic.
 irrigation → water/rain decision. NOT fertilizer.
 disease → disease analysis. NOT weather.
@@ -64,7 +82,7 @@ dam → reservoir status. NOT irrigation advice.
 location → location details of pincode/village. NOT crop advice.
 general → use weather if available, or answer the question.
 
-RULE 5 — DISEASE PROTOCOL:
+RULE 6 — DISEASE PROTOCOL:
 When farmer reports symptoms (yellow leaves, spots, wilting):
 Step 1: Check DISEASE_MATCH in <data>. If found, give specific disease + treatment.
 Step 2: If no match, check SOIL data for nutrient deficiency.
@@ -73,13 +91,13 @@ Step 3: If multiple causes possible, say "இது பல காரணங்க
   - "இலையின் ஓரங்கள் காய்கிறதா?"
 Then give best guess from data. End with "உறுதிப்படுத்த வேளாண் அலுவலர் ஆலோசனை பெறுங்கள்."
 
-RULE 6 — TAMIL NUMBERS:
+RULE 7 — TAMIL NUMBERS:
 In Tamil replies, write numbers as words:
 ✗ "240 kg/ha"  ✓ "நைட்ரஜன் குறைவாக உள்ளது"
 ✗ "50 kg/acre"  ✓ "ஐம்பது கிலோ ஒரு ஏக்கருக்கு"
 Keep யூரியா, DAP, NPK as-is.
 
-RULE 7 — FORMAT:
+RULE 8 — FORMAT:
 Maximum 3 sentences. Give DECISIONS not information.
 """
 
@@ -174,6 +192,12 @@ def _build_user_message(farmer_text: str, farmer_profile: dict, context: dict) -
     elif "location" in intents:
         data_parts.append("LOCATION: details not found for this pincode/village.")
 
+    # Regional Dictionary
+    rd = context.get("regional_dictionary", [])
+    if rd:
+        dict_entries = [f"'{entry['term']}' = '{entry['standard_meaning']}'" for entry in rd]
+        data_parts.append(f"REGIONAL_DICTIONARY for {farmer_profile.get('district')}: {'; '.join(dict_entries)}")
+
     data_str = "\n".join(data_parts) if data_parts else "no data available"
     parts.append(f"<data>\n{data_str}\n</data>")
     parts.append(f"<question>{farmer_text}</question>")
@@ -181,16 +205,18 @@ def _build_user_message(farmer_text: str, farmer_profile: dict, context: dict) -
     return "\n\n".join(parts)
 
 
-async def get_kisan_response(farmer_text: str, farmer_profile: dict, context: dict) -> str:
+async def get_kisan_response(farmer_text: str, farmer_profile: dict, context: dict) -> tuple[str, list]:
     check_rate_limit()
     user_message = _build_user_message(farmer_text, farmer_profile, context)
     print(f"📝 GPT input intents: {context.get('intents')}")
 
+    import json
+    
     try:
         response = await asyncio.wait_for(
             asyncio.to_thread(
                 openai_client.chat.completions.create,
-                model="openai/gpt-oss-120b",
+                model=PRIMARY_MODEL,
                 max_tokens=1024,
                 temperature=0,
                 messages=[
@@ -200,16 +226,29 @@ async def get_kisan_response(farmer_text: str, farmer_profile: dict, context: di
             ),
             timeout=15.0,
         )
-        answer = response.choices[0].message.content
-        print(f"✅ GPT (primary): {answer[:80]}...")
-        return answer
+        content = response.choices[0].message.content
+        
+        # Clean markdown code blocks if any
+        if content.startswith("```json"):
+            content = content[7:]
+        if content.startswith("```"):
+            content = content[3:]
+        if content.endswith("```"):
+            content = content[:-3]
+        content = content.strip()
+        
+        data = json.loads(content)
+        answer = data.get("reply", "மன்னிக்கவும், கணினி பிழை.")
+        flags = data.get("flagged_terms", [])
+        print(f"✅ GPT (primary): {answer[:80]}... Flags: {len(flags)}")
+        return answer, flags
     except (asyncio.TimeoutError, Exception) as e:
-        print(f"⚠️ Primary model failed ({e}), falling back to openai/gpt-oss-20b...")
+        print(f"⚠️ Primary model failed ({e}), falling back...")
         try:
             response = await asyncio.wait_for(
                 asyncio.to_thread(
                     openai_client.chat.completions.create,
-                    model="openai/gpt-oss-20b",
+                    model=FALLBACK_MODEL,
                     max_tokens=1024,
                     temperature=0,
                     messages=[
@@ -219,14 +258,26 @@ async def get_kisan_response(farmer_text: str, farmer_profile: dict, context: di
                 ),
                 timeout=10.0,
             )
-            answer = response.choices[0].message.content
-            print(f"✅ GPT (fallback): {answer[:80]}...")
-            return answer
+            content = response.choices[0].message.content
+            
+            if content.startswith("```json"):
+                content = content[7:]
+            if content.startswith("```"):
+                content = content[3:]
+            if content.endswith("```"):
+                content = content[:-3]
+            content = content.strip()
+            
+            data = json.loads(content)
+            answer = data.get("reply", "மன்னிக்கவும், கணினி பிழை.")
+            flags = data.get("flagged_terms", [])
+            print(f"✅ GPT (fallback): {answer[:80]}... Flags: {len(flags)}")
+            return answer, flags
         except asyncio.TimeoutError:
-            return "பதில் தாமதமாகிறது. மீண்டும் முயற்சிக்கவும்."
+            return "பதில் தாமதமாகிறது. மீண்டும் முயற்சிக்கவும்.", []
         except Exception as e2:
             print(f"❌ Fallback error: {e2}")
-            return "தொழில்நுட்ப பிழை. மீண்டும் முயற்சிக்கவும்."
+            return "தொழில்நுட்ப பிழை. மீண்டும் முயற்சிக்கவும்.", []
 
 
 # ─── Whisper ──────────────────────────────────────────────────────────
@@ -246,7 +297,7 @@ WHISPER_PROMPT = (
 )
 
 async def transcribe_audio(audio_bytes, content_type="audio/webm",
-                            filename="recording.webm", language="ta"):
+                            filename="recording.webm", language="ta", district=None):
     check_rate_limit()
     ext = EXT_MAP.get(content_type, EXT_MAP.get(content_type.split(";")[0], "webm"))
     lang_map = {"tamil": "ta", "english": "en", "hindi": "hi",
@@ -269,9 +320,18 @@ async def transcribe_audio(audio_bytes, content_type="audio/webm",
     # Clean the MIME type (e.g. remove ;codecs=opus from audio/webm;codecs=opus)
     clean_content_type = content_type.split(";")[0]
     
+    # Build dynamic prompt with regional terms
+    prompt = WHISPER_PROMPT
+    if district:
+        from services.flag_service import get_dictionary_for_district
+        rd = await get_dictionary_for_district(district)
+        if rd:
+            terms = ", ".join([entry["term"] for entry in rd])
+            prompt += f" {terms}."
+    
     # We can pass raw bytes to httpx
     files = {"file": (filename, audio_bytes, clean_content_type)}
-    data = {"model": "saaras:v3", "language_code": sarvam_lang}
+    data = {"model": "saaras:v3", "language_code": sarvam_lang, "prompt": prompt}
     
     try:
         async with httpx.AsyncClient(timeout=30) as client:

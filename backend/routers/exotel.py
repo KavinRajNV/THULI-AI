@@ -9,7 +9,7 @@ import httpx
 from fastapi import APIRouter, Form, BackgroundTasks
 from fastapi.responses import PlainTextResponse
 
-from services import ai_service, farmer_service, pipeline_service
+from services import ai_service, farmer_service, pipeline_service, call_service, flag_service
 from services.farmer_service import get_onboarding_response
 
 router = APIRouter()
@@ -26,15 +26,7 @@ EXOTEL_VIRTUAL_NUMBER = os.getenv("EXOTEL_VIRTUAL_NUMBER", "")
 BASE_URL = os.getenv("BASE_URL", "http://localhost:8000")
 
 
-def _cleanup_file(path: str):
-    """Background task to delete audio file."""
-    import time
-    time.sleep(300)  # 5 minutes
-    try:
-        if os.path.exists(path):
-            os.remove(path)
-    except Exception:
-        pass
+
 
 
 @router.post("/exotel/incoming")
@@ -45,6 +37,9 @@ async def incoming_call(
 ):
     """Handle incoming Exotel call — greet + start recording."""
     farmer = await farmer_service.get_or_create_farmer(From)
+    
+    # Initialize a new call document
+    await call_service.start_call(CallSid, From, farmer.get("district"), farmer.get("village"))
 
     if not farmer.get("onboarding_complete"):
         greeting = (
@@ -102,36 +97,49 @@ async def process_recording(
             )
         audio_bytes = audio_resp.content
 
-        # Transcribe with Whisper
-        farmer_text = await ai_service.transcribe_audio(audio_bytes)
-
         # Get farmer profile
         farmer = await farmer_service.get_or_create_farmer(From)
 
+        # Transcribe with Whisper
+        farmer_text = await ai_service.transcribe_audio(audio_bytes, district=farmer.get("district"))
+
         # Onboarding or full pipeline
+        flags = []
         if not farmer.get("onboarding_complete"):
             response_text, updates = get_onboarding_response(farmer, farmer_text)
             if updates:
                 await farmer_service.update_farmer(From, updates)
         else:
             context = await pipeline_service.build_context(farmer_text, farmer)
-            response_text = await ai_service.get_kisan_response(farmer_text, farmer, context)
+            response_text, flags = await ai_service.get_kisan_response(farmer_text, farmer, context)
 
         # Save conversation
         await farmer_service.save_conversation_turn(From, "farmer", farmer_text)
         await farmer_service.save_conversation_turn(From, "kisan", response_text)
 
-        # Generate TTS
+        os.makedirs("static/calls", exist_ok=True)
         audio_id = CallSid or uuid.uuid4().hex[:12]
-        mp3_path = f"static/{audio_id}.mp3"
-        await ai_service.text_to_speech(response_text, mp3_path)
+        import time
+        ts = int(time.time())
+        farmer_audio_path = f"static/calls/{audio_id}_farmer_{ts}.webm"
+        with open(farmer_audio_path, "wb") as f:
+            f.write(audio_bytes)
 
-        # Schedule cleanup
-        background_tasks.add_task(_cleanup_file, mp3_path)
+        # Generate TTS
+        kisan_audio_path = f"static/calls/{audio_id}_kisan_{ts}.mp3"
+        await ai_service.text_to_speech(response_text, kisan_audio_path)
+
+        if CallSid:
+            await call_service.append_transcript(CallSid, "farmer", farmer_text, farmer_audio_path)
+            await call_service.append_transcript(CallSid, "kisan", response_text, kisan_audio_path)
+            if flags:
+                await flag_service.create_flags(flags, CallSid, farmer.get("district"), farmer.get("village"), farmer_audio_path)
+
+        # We no longer cleanup the files immediately so we can view them in the dashboard
 
         xml = f"""<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Play>{BASE_URL}/{mp3_path}</Play>
+  <Play>{BASE_URL}/{kisan_audio_path}</Play>
   <Record action="{BASE_URL}/exotel/process"
           maxLength="30"
           finishOnKey="#"
@@ -158,10 +166,7 @@ async def call_status(
     Status: str = Form(default=""),
 ):
     """Handle call completion — cleanup audio files."""
-    mp3_path = f"static/{CallSid}.mp3"
-    try:
-        if os.path.exists(mp3_path):
-            os.remove(mp3_path)
-    except Exception:
-        pass
+    if CallSid:
+        await call_service.end_call(CallSid)
+    # We no longer delete mp3_path here
     return {"status": "ok"}

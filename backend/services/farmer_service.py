@@ -65,6 +65,8 @@ SINGLE_DIGITS = {
     "jeero": 0, "zero": 0,
     # Whisper misheard
     "சைபர்": 0,
+    # Colloquial joined suffixes (e.g., இருபத் + தஞ்சு = 25)
+    "தஞ்சு": 5, "தாறு": 6, "தேழு": 7, "தெட்டு": 8, "தொன்பது": 9, "தொண்ணூறு": 9, "தொம்பது": 9,
 }
 
 COMPOUND_NUMBERS = {
@@ -93,6 +95,9 @@ COMPOUND_NUMBERS = {
     "fifty": 50, "sixty": 60, "seventy": 70, "eighty": 80,
     "ninety": 90, "hundred": 100,
 }
+
+# Connectors that join tens and units (e.g., இருபத்து + ஐந்து -> இருபத்தஞ்சு where த் is the connector)
+CONNECTORS = ["த்தி", "த்து", "த்", "தி", "ய", "யி", "and", "ti", "thi"]
 
 
 def _text_to_number(text: str) -> int | None:
@@ -279,12 +284,22 @@ def _extract_crop(text: str) -> str | None:
 
 def _extract_days(text: str) -> int | None:
     num = _text_to_number(text)
-    if num is not None and 0 <= num <= 365:
-        return num
-    if "நேற்று" in text or "yesterday" in text.lower():
+    text_lower = text.lower()
+    
+    multiplier = 1
+    if any(w in text_lower for w in ["மாதம்", "மாதங்கள்", "மாசம்", "month", "months"]):
+        multiplier = 30
+    elif any(w in text_lower for w in ["வாரம்", "வாரங்கள்", "week", "weeks"]):
+        multiplier = 7
+        
+    if num is not None:
+        result = num * multiplier
+        if 0 <= result <= 365:
+            return result
+        return None
+        
+    if "நேற்று" in text_lower or "yesterday" in text_lower:
         return 1
-    if "வாரம்" in text or "week" in text.lower():
-        return 7
-    if "மாதம்" in text or "month" in text.lower():
-        return 30
+    if multiplier > 1:
+        return multiplier
     return None

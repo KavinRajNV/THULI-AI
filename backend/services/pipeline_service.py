@@ -56,6 +56,10 @@ async def build_context(farmer_text: str, farmer_profile: dict) -> dict:
     else:
         if district or (lat and lon): tasks["weather"] = weather_service.get_weather(district=district, lat=lat, lon=lon)
 
+    from services import flag_service
+    if district:
+        tasks["regional_dictionary"] = flag_service.get_dictionary_for_district(district)
+
     if tasks:
         keys = list(tasks.keys())
         try:

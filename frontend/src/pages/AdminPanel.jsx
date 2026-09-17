@@ -19,6 +19,7 @@ export default function AdminPanel() {
   const [dams, setDams] = useState([])
   const [farmers, setFarmers] = useState([])
   const [alerts, setAlerts] = useState([])
+  const [flags, setFlags] = useState([])
   const [search, setSearch] = useState('')
   const [tab, setTab] = useState('all')
   const [sel, setSel] = useState(null)
@@ -28,13 +29,14 @@ export default function AdminPanel() {
   const load = async () => {
     setLoading(true)
     try {
-      const [s,d,f,a] = await Promise.all([
+      const [s,d,f,a,fl] = await Promise.all([
         fetch(`${API}/api/admin/stats`).then(r=>r.json()).catch(()=>null),
         fetch(`${API}/api/admin/dams`).then(r=>r.json()).catch(()=>({dams:[]})),
         fetch(`${API}/api/admin/farmers?search=${search}`).then(r=>r.json()).catch(()=>({farmers:[]})),
         fetch(`${API}/api/admin/alerts`).then(r=>r.json()).catch(()=>({alerts:[]})),
+        fetch(`${API}/api/admin/flags`).then(r=>r.json()).catch(()=>({flags:[]})),
       ])
-      if(s)setStats(s); setDams(d.dams||[]); setFarmers(f.farmers||[]); setAlerts(a.alerts||[])
+      if(s)setStats(s); setDams(d.dams||[]); setFarmers(f.farmers||[]); setAlerts(a.alerts||[]); setFlags(fl.flags||[])
     } catch{} finally{setLoading(false)}
   }
   useEffect(()=>{load()},[])
@@ -147,13 +149,43 @@ export default function AdminPanel() {
                     {c.role==='farmer'?'Farmer':'Kisan AI'}</span>
                   <span className="text-[10px] text-gray-300">{fmtTime(c.timestamp)}</span>
                 </div>
-                {c.content}
+                {typeof c.content === 'string' ? c.content : JSON.stringify(c.content)}
               </div>
             )) : <p className="text-sm text-gray-400 text-center py-8">
               {sel?'No conversation data.':'Select a farmer to view conversation history.'}</p>}
           </div>
         </section>
       </div>
+
+      {/* Recent Flags */}
+      <section>
+        <div className="flex items-center gap-2 mb-3">
+          <AlertTriangle className="w-4 h-4 text-orange-500"/>
+          <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wider">Unverified Regional Terms</h2>
+        </div>
+        <div className="space-y-3">
+          {flags.length > 0 ? flags.map((f, i) => (
+            <div key={i} className="bg-white rounded-xl border p-4 flex items-center justify-between shadow-sm">
+              <div>
+                <p className="text-xs text-gray-500 mb-1">{f.district}</p>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-600">Term:</span>
+                  <span className="text-sm font-bold text-red-600">"{f.display_term}"</span>
+                  {f.ai_confidence > 0 && <span className="text-xs bg-orange-100 text-orange-700 px-2 rounded-full ml-2">AI: {f.ai_confidence}%</span>}
+                </div>
+                {f.ai_proposed_meaning && <p className="text-xs text-gray-500 mt-1">Suggested: {f.ai_proposed_meaning}</p>}
+                <p className="text-[10px] text-gray-400 mt-1">Occurrences: {f.occurrence_count} | Calls: {f.distinct_calls_count}</p>
+              </div>
+              <div className="flex gap-2">
+                <a href={`/admin/flags/${encodeURIComponent(f.term)}/${encodeURIComponent(f.district)}`}
+                   className="px-4 py-1.5 bg-green-50 text-green-700 rounded-lg text-xs font-medium hover:bg-green-100 transition-colors">
+                  View & Validate
+                </a>
+              </div>
+            </div>
+          )) : <div className="bg-white rounded-xl border p-6 text-center text-sm text-gray-400">No pending flags.</div>}
+        </div>
+      </section>
 
       {/* Alerts */}
       <section>

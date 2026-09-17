@@ -70,3 +70,75 @@ async def get_alerts(limit: int = 50):
     for a in alerts:
         a["_id"] = str(a["_id"])
     return {"alerts": alerts}
+
+from services.db import flags_col, calls_col, regional_dictionary_col
+from services.validation_agent import promote_to_dictionary
+
+@router.get("/api/admin/flags")
+async def get_flags(status: str = "pending", limit: int = 50):
+    pipeline = [
+        {"$match": {"status": {"$in": ["pending", "ai-processed"]}}},
+        {"$group": {
+            "_id": {"term": "$normalized_term", "district": "$district"},
+            "display_term": {"$first": "$term"},
+            "occurrence_count": {"$sum": 1},
+            "distinct_calls": {"$addToSet": "$call_id"},
+            "earliest_seen": {"$min": "$created_at"},
+            "latest_seen": {"$max": "$created_at"},
+            "top_confidence": {"$max": "$confidence"},
+            "ai_proposed_meaning": {"$first": "$ai_proposed_meaning"},
+            "ai_confidence": {"$max": "$ai_confidence"}
+        }},
+        {"$project": {
+            "term": "$_id.term",
+            "district": "$_id.district",
+            "display_term": 1,
+            "occurrence_count": 1,
+            "distinct_calls_count": {"$size": "$distinct_calls"},
+            "earliest_seen": 1,
+            "latest_seen": 1,
+            "top_confidence": 1,
+            "ai_proposed_meaning": 1,
+            "ai_confidence": 1
+        }},
+        {"$sort": {"occurrence_count": -1}},
+        {"$limit": limit}
+    ]
+    flags = await flags_col.aggregate(pipeline).to_list(None)
+    return {"flags": flags}
+
+
+@router.get("/api/admin/flags/detail")
+async def get_flag_detail(term: str, district: str):
+    occurrences = await flags_col.find({
+        "normalized_term": term, 
+        "district": district,
+        "status": {"$in": ["pending", "ai-processed"]}
+    }).sort("created_at", -1).to_list(10)
+    
+    calls = []
+    for occ in occurrences:
+        occ["_id"] = str(occ["_id"])
+        call = await calls_col.find_one({"call_id": occ["call_id"]})
+        if call:
+            call["_id"] = str(call["_id"])
+            calls.append(call)
+            
+    return {
+        "term": term,
+        "district": district,
+        "occurrences": occurrences,
+        "calls": calls
+    }
+
+
+from pydantic import BaseModel
+class ResolveRequest(BaseModel):
+    meaning: str
+    confidence: int
+
+@router.post("/api/admin/flags/resolve")
+async def resolve_flag(term: str, district: str, req: ResolveRequest):
+    await promote_to_dictionary(term, district, req.meaning, req.confidence, "verified")
+    return {"status": "ok"}
+

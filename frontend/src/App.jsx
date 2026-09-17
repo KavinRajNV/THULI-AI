@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Link, useLocation, Navigate } from 'react
 import { Wheat, LayoutDashboard, User, ShieldCheck, Lock, LogOut } from 'lucide-react'
 import FarmerChat from './pages/FarmerChat'
 import AdminPanel from './pages/AdminPanel'
+import FlagDetailView from './pages/FlagDetailView'
 
 function AdminNav({ onLogout }) {
   const loc = useLocation()
@@ -127,6 +128,7 @@ export default function App() {
           <AdminNav onLogout={() => { setAdminAuth(false); setRole(null) }} />
           <Routes>
             <Route path="/admin" element={<AdminPanel />} />
+            <Route path="/admin/flags/:term/:district" element={<FlagDetailView />} />
             <Route path="/admin/chat" element={<FarmerChat />} />
             <Route path="*" element={<Navigate to="/admin" />} />
           </Routes>
