@@ -37,7 +37,7 @@ def get_village(address, default="Not available"):
     return clean(
         address.get("village") or address.get("town") or 
         address.get("municipality") or address.get("city") or 
-        address.get("hamlet"),
+        address.get("suburb") or address.get("hamlet"),
         default
     )
 

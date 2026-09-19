@@ -273,12 +273,14 @@ def get_onboarding_response(farmer: dict, user_text: str) -> tuple[str, dict]:
             if pincode:
                 updates["pincode"] = pincode
             d = location["district"]
-            print(f"✅ Onboard: district={d}, lat={location.get('lat')}, lon={location.get('lon')}")
+            v = location.get("village")
+            loc_display = f"{d}, {v}" if v and v != "Not available" else d
+            print(f"✅ Onboard: district={d}, village={v}, lat={location.get('lat')}, lon={location.get('lon')}")
             msgs = {
-                "english": f"Thank you! {d} district registered. What crop are you growing?",
-                "hindi": f"धन्यवाद! {d} जिला दर्ज। आप कौन सी फसल उगा रहे हैं?",
+                "english": f"Thank you! {loc_display} registered. What crop are you growing?",
+                "hindi": f"धन्यवाद! {loc_display} दर्ज। आप कौन सी फसल उगा रहे हैं?",
             }
-            return msgs.get(lang, f"நன்றி! {d} மாவட்டம் பதிவு. என்ன பயிர் சாகுபடி செய்கிறீர்கள்?"), updates
+            return msgs.get(lang, f"நன்றி! {loc_display} பதிவு. என்ன பயிர் சாகுபடி செய்கிறீர்கள்?"), updates
         else:
             return ("அந்த இடம் கிடைக்கவில்லை. 6 இலக்க பின்கோடு சொல்லுங்கள். உதாரணம்: 623504"
                     if lang != "english" else "Location not found. Say your 6-digit pincode."), {}

@@ -20,7 +20,7 @@ def _audio_url(req: Request, path: str) -> str:
 
 def _profile(f: dict) -> dict:
     return {
-        "district": f.get("district"), "crop": f.get("primary_crop"),
+        "district": f.get("district"), "village": f.get("village"), "crop": f.get("primary_crop"),
         "days": f.get("days_after_sowing"),
         "lat": f.get("lat"), "lon": f.get("lon"),
         "onboarding_complete": f.get("onboarding_complete", False),

@@ -181,7 +181,7 @@ export default function FarmerChat() {
         {profile ? (
           <div className="space-y-3">
             <SidebarCard icon={<Globe className="w-4 h-4" />} label="Language" value={langObj?.label || language} />
-            <SidebarCard icon={<MapPin className="w-4 h-4" />} label="District" value={profile.district || 'Not set'} />
+            <SidebarCard icon={<MapPin className="w-4 h-4" />} label="Location" value={[profile.district, profile.village !== 'Not available' ? profile.village : null].filter(Boolean).join(', ') || 'Not set'} />
             <SidebarCard icon={<Sprout className="w-4 h-4" />} label="Crop" value={profile.crop || 'Not set'} />
             <SidebarCard icon={<Calendar className="w-4 h-4" />} label="Days" value={profile.days != null ? `${profile.days} days` : 'Not set'} />
             <div className={`px-3 py-2 rounded-lg text-xs font-medium ${

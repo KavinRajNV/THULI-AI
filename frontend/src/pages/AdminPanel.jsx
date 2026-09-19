@@ -109,7 +109,7 @@ export default function AdminPanel() {
             <table className="w-full text-sm">
               <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
                 <tr><th className="px-4 py-2 text-left">Channel</th><th className="px-4 py-2 text-left">Phone</th>
-                    <th className="px-4 py-2 text-left">District</th><th className="px-4 py-2 text-left">Crop</th>
+                    <th className="px-4 py-2 text-left">Location</th><th className="px-4 py-2 text-left">Crop</th>
                     <th className="px-4 py-2 text-left">Status</th></tr>
               </thead>
               <tbody className="max-h-[350px] overflow-y-auto">
@@ -124,7 +124,7 @@ export default function AdminPanel() {
                       </span>
                     </td>
                     <td className="px-4 py-2.5 font-mono text-xs text-gray-700">{f.phone}</td>
-                    <td className="px-4 py-2.5 text-gray-600">{f.district||'--'}</td>
+                    <td className="px-4 py-2.5 text-gray-600">{[f.district, f.village !== 'Not available' ? f.village : null].filter(Boolean).join(', ') || '--'}</td>
                     <td className="px-4 py-2.5 text-gray-600">{f.primary_crop||'--'}</td>
                     <td className="px-4 py-2.5">
                       <span className={`text-xs px-2 py-0.5 rounded-full ${
