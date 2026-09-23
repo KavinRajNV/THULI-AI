@@ -76,6 +76,10 @@ def main():
     agree = 0
     total = len(samples)
     disagreements = []
+    
+    y_true = []
+    y_bert = []
+    y_rules = []
 
     # Build reverse map: pipeline intent → what the label file might use
     # The labelled file might use either model labels or pipeline labels
@@ -126,11 +130,27 @@ def main():
                 "bert": f"{bert_mapped} ({confidence:.2f})" if bert_mapped != "N/A" else "N/A",
                 "rules": rule_primary,
             })
+            
+        y_true.append(gold_normalized)
+        y_bert.append(bert_mapped)
+        y_rules.append(rule_primary)
 
     # --- Print results ---
+    from sklearn.metrics import classification_report
+    
     print(f"  BERT accuracy:       {bert_correct}/{total} = {bert_correct/total*100:.1f}%")
     print(f"  Rule-based accuracy: {rules_correct}/{total} = {rules_correct/total*100:.1f}%")
     print(f"  Agreement rate:      {agree}/{total} = {agree/total*100:.1f}%")
+    
+    print(f"\n{'='*70}")
+    print("  BERT CLASSIFICATION REPORT")
+    print(f"{'='*70}")
+    print(classification_report(y_true, y_bert, zero_division=0))
+    
+    print(f"\n{'='*70}")
+    print("  RULE-BASED CLASSIFICATION REPORT")
+    print(f"{'='*70}")
+    print(classification_report(y_true, y_rules, zero_division=0))
     print()
 
     if disagreements:

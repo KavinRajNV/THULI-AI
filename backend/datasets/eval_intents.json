@@ -1,0 +1,49 @@
+[
+    {"text": "நாளைக்கு மழை வருமா?", "intent": "general"},
+    {"text": "வெப்பநிலை எப்படி இருக்கு", "intent": "general"},
+    {"text": "will it rain today", "intent": "general"},
+    {"text": "weather in chennai", "intent": "general"},
+    {"text": "காத்து ரொம்ப அடிக்குமா", "intent": "general"},
+
+    {"text": "என் தக்காளி செடியில் இலை சுருட்டல் நோய் உள்ளது", "intent": "disease"},
+    {"text": "leaf yellowing in paddy", "intent": "disease"},
+    {"text": "வெள்ளரிக்காயில் புழு இருக்கு", "intent": "disease"},
+    {"text": "my crop has white spots on leaves", "intent": "disease"},
+    {"text": "செடி வாடி போச்சு", "intent": "disease"},
+
+    {"text": "என்ன உரம் போடலாம்?", "intent": "fertilizer"},
+    {"text": "யூரியா எவ்வளவு போடணும்", "intent": "fertilizer"},
+    {"text": "how much NPK for paddy", "intent": "fertilizer"},
+    {"text": "organic fertilizer for tomato", "intent": "fertilizer"},
+    {"text": "டிஏபி போடலாமா", "intent": "fertilizer"},
+
+    {"text": "என்ன பயிர் செய்யலாம்?", "intent": "crop_recommend"},
+    {"text": "which crop is best now", "intent": "crop_recommend"},
+    {"text": "அடுத்த மாதம் என்ன பயிர் வைக்கலாம்", "intent": "crop_recommend"},
+    {"text": "summer crop suggestions", "intent": "crop_recommend"},
+    {"text": "என் நிலத்துக்கு எந்த பயிர் செட் ஆகும்", "intent": "crop_recommend"},
+
+    {"text": "மேட்டூர் அணை நீர்மட்டம்", "intent": "dam"},
+    {"text": "bhavanisagar water level", "intent": "dam"},
+    {"text": "அணை திறக்கப்படுமா", "intent": "dam"},
+    {"text": "how much water in vaigai dam", "intent": "dam"},
+    {"text": "அணையில் எவ்வளவு தண்ணீர் இருக்கு", "intent": "dam"},
+
+    {"text": "என் ஊர் திருநெல்வேலி", "intent": "location"},
+    {"text": "pincode 600001", "intent": "location"},
+    {"text": "நான் மதுரைல இருக்கேன்", "intent": "location"},
+    {"text": "my village is melur", "intent": "location"},
+    {"text": "பின்கோடு 625001", "intent": "location"},
+
+    {"text": "வணக்கம்", "intent": "greeting"},
+    {"text": "நன்றி", "intent": "greeting"},
+    {"text": "hello kisan ai", "intent": "greeting"},
+    {"text": "காலை வணக்கம்", "intent": "greeting"},
+    {"text": "thank you very much", "intent": "greeting"},
+
+    {"text": "யாருப்பா முதலமைச்சர்", "intent": "out_of_scope"},
+    {"text": "cricket score என்ன", "intent": "out_of_scope"},
+    {"text": "sdfghjkl", "intent": "out_of_scope"},
+    {"text": "tell me a joke", "intent": "out_of_scope"},
+    {"text": "சினிமா நியூஸ் சொல்லு", "intent": "out_of_scope"}
+]
