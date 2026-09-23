@@ -65,7 +65,16 @@ async def lifespan(app: FastAPI):
     # Initialize Disease RAG (BGE-M3 + FAISS)
     from services.disease_service import init_models
     init_models()
-    
+
+    # Initialize Intent Classifier (IndicBERT v2)
+    try:
+        from services.intent_classifier import init_intent_model
+        init_intent_model()
+    except FileNotFoundError as e:
+        print(f"⚠️  Intent model not found — falling back to rules: {e}")
+    except Exception as e:
+        print(f"⚠️  Intent model load failed — falling back to rules: {e}")
+
     start_scheduler()
     print("✅ All datasets loaded. Scheduler running.")
     yield

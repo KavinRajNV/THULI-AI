@@ -3,12 +3,12 @@ services/pipeline_service.py — Intent-driven data gathering.
 Passes farmer_text to dam_service for direct name extraction.
 """
 import asyncio
-from services.intent_service import detect_intents
+from services.intent_classifier import classify_intent
 from services import weather_service, dam_service, soil_service, crop_service
 from services import disease_service, fertilizer_service
 
 async def build_context(farmer_text: str, farmer_profile: dict) -> dict:
-    intents = detect_intents(farmer_text)
+    intents = classify_intent(farmer_text)
     context = {"intents": intents}
     district = farmer_profile.get("district")
     crop = farmer_profile.get("primary_crop")
@@ -52,6 +52,9 @@ async def build_context(farmer_text: str, farmer_profile: dict) -> dict:
         pincode = _text_to_pincode(farmer_text)
         if pincode:
             tasks["location_details"] = asyncio.to_thread(location_service.resolve_location, pincode)
+
+    elif any(i in intents for i in ("greeting", "out_of_scope")):
+        pass  # No data needed — GPT will give a polite capabilities reply
 
     else:
         if district or (lat and lon): tasks["weather"] = weather_service.get_weather(district=district, lat=lat, lon=lon)

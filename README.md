@@ -57,6 +57,29 @@ cp .env.example .env
 uvicorn main:app --reload --port 8000
 ```
 
+### Intent Model Setup
+
+Place the fine-tuned **IndicBERT v2** intent classifier in `backend/models/intent_model/`.  
+Required files (download from Kaggle or team shared drive):
+
+| File | Description |
+|------|-------------|
+| `config.json` | Model architecture & label mapping |
+| `model.safetensors` | Fine-tuned weights (~1.1 GB) |
+| `tokenizer.json` | SentencePiece tokenizer vocabulary |
+| `tokenizer_config.json` | Tokenizer settings |
+| `label_map.json` | Label ID → name mapping |
+
+**Environment variables** (all optional, defaults shown):
+
+```bash
+INTENT_BACKEND=bert           # "bert" or "rules" (instant rollback)
+INTENT_CONF_THRESHOLD=0.6     # Min confidence to trust model prediction
+INTENT_MODEL_DIR=backend/models/intent_model  # Path to model files
+```
+
+> **Note:** `backend/models/` is git-ignored. Each teammate must place the model locally.
+
 ### 2. Frontend Setup
 
 ```bash

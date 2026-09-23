@@ -32,3 +32,9 @@ htmlcov/
 Thumbs.db
 .vscode/
 .idea/
+
+# ML model weights (too large for git)
+models/
+
+# Intent classification logs
+logs/

@@ -79,7 +79,7 @@ export default function App() {
           <Route path="/" element={<AdminPanel />} />
           <Route path="/admin" element={<Navigate to="/" />} />
           <Route path="/flags/:term/:district" element={<FlagDetailView />} />
-          <Route path="/admin/flags/:term/:district" element={<Navigate to="/flags/:term/:district" />} />
+          <Route path="/admin/flags/:term/:district" element={<FlagDetailView />} />
           <Route path="/chat" element={<FarmerChat />} />
           <Route path="/admin/chat" element={<Navigate to="/chat" />} />
           <Route path="*" element={<Navigate to="/" />} />

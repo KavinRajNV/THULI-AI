@@ -178,7 +178,7 @@ export default function AdminPanel() {
                 <p className="text-[10px] text-gray-400 mt-1">Occurrences: {f.occurrence_count} | Calls: {f.distinct_calls_count}</p>
               </div>
               <div className="flex gap-2">
-                <Link to={`/admin/flags/${encodeURIComponent(f.term)}/${encodeURIComponent(f.district)}`}
+                <Link to={`/flags/${encodeURIComponent(f.term)}/${encodeURIComponent(f.district)}`}
                    className="px-4 py-1.5 bg-green-50 text-green-700 rounded-lg text-xs font-medium hover:bg-green-100 transition-colors">
                   View & Validate
                 </Link>

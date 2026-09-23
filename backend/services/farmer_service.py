@@ -4,7 +4,7 @@ Handles ALL Tamil number variants Whisper produces.
 """
 
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlalchemy import select, insert, update, delete
 from database import async_session
 from models import Farmer, ConversationTurn
@@ -29,9 +29,14 @@ async def get_or_create_farmer(phone: str) -> dict:
             
         farmer_dict = farmer.to_dict()
         
+        # Only include turns from the last 30 minutes to isolate the current chat session
+        thirty_mins_ago = datetime.utcnow() - timedelta(minutes=30)
         turns_result = await session.execute(
             select(ConversationTurn)
-            .where(ConversationTurn.farmer_id == farmer.id)
+            .where(
+                ConversationTurn.farmer_id == farmer.id,
+                ConversationTurn.timestamp >= thirty_mins_ago
+            )
             .order_by(ConversationTurn.timestamp.asc())
         )
         turns = turns_result.scalars().all()
