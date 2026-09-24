@@ -1,0 +1,11 @@
+class,precision,recall,f1_score,support
+crop_recommendation,0.9583,0.9583,0.9583,24
+dam_water,1.0,0.9583,0.9787,24
+disease_prediction,1.0,0.92,0.9583,25
+fertilizer_recommendation,0.931,0.9643,0.9474,28
+greeting,1.0,1.0,1.0,12
+out_of_scope,0.9615,1.0,0.9804,25
+weather,0.95,1.0,0.9744,19
+accuracy,,,0.9682,157
+macro avg,0.9716,0.9716,0.9711,157
+weighted avg,0.9692,0.9682,0.9681,157

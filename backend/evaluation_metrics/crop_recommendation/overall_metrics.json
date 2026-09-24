@@ -1,0 +1,31 @@
+{
+    "Model": "XGBoost Classifier",
+    "Accuracy": 0.9842,
+    "Cross-Validation Accuracy": "0.9785 \u00b1 0.0061",
+    "Log Loss": 0.0543,
+    "ROC-AUC Score (OVR Macro)": 0.9987,
+    "Training Time (s)": 2.34,
+    "Inference Time per sample (ms)": 1.2,
+    "Top Features": [
+        {
+            "Feature": "Humidity",
+            "Importance": 0.342
+        },
+        {
+            "Feature": "Rainfall",
+            "Importance": 0.281
+        },
+        {
+            "Feature": "Potassium (K)",
+            "Importance": 0.155
+        },
+        {
+            "Feature": "Phosphorous (P)",
+            "Importance": 0.112
+        },
+        {
+            "Feature": "Nitrogen (N)",
+            "Importance": 0.078
+        }
+    ]
+}

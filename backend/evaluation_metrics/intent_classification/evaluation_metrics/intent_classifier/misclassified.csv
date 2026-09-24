@@ -1,0 +1,6 @@
+true,pred,confidence,pair,text
+disease_prediction,fertilizer_recommendation,0.94,oos_disease,இலைப்பேன் தாக்குதலுக்கு எந்த மருந்து அடிச்சா கேக்கும் சொல்லுங்க
+disease_prediction,fertilizer_recommendation,0.98,disease_prediction vs fertilizer_recommendation,maruthu for leaf spot in groundnut plant
+crop_recommendation,out_of_scope,0.37,crop_recommendation vs fertilizer_recommendation,madurai la veyiluku entha payir pota nalla varum
+dam_water,weather,0.82,,வாய்க்கால்தண்ணி எப்ப வரும்னு சொல்லு
+fertilizer_recommendation,crop_recommendation,0.66,crop_recommendation_vs_fertilizer_recommendation,மிளகாய்க்கு பூ உதிருது எந்த nutrient போடலாம்

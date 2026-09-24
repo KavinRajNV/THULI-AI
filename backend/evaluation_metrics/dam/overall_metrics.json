@@ -1,0 +1,23 @@
+{
+    "Model": "XGBoost Classifier",
+    "Accuracy": 0.915,
+    "Cross-Validation Accuracy": "0.902 \u00b1 0.015",
+    "Log Loss": 0.231,
+    "ROC-AUC Score (OVR Macro)": 0.954,
+    "Training Time (s)": 1.2,
+    "Inference Time per sample (ms)": 0.8,
+    "Top Features": [
+        {
+            "Feature": "current_storage_pct",
+            "Importance": 0.542
+        },
+        {
+            "Feature": "historical_avg",
+            "Importance": 0.311
+        },
+        {
+            "Feature": "month",
+            "Importance": 0.147
+        }
+    ]
+}

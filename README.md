@@ -1,4 +1,4 @@
-# 🌾 KISAN.AI
+# 🌾 Thuli AI
 
 **Multilingual voice-first agricultural intelligence for Tamil Nadu farmers.**
 
@@ -6,7 +6,7 @@ No smartphone. No internet. No app. Just a phone call.
 
 ---
 
-## What is KISAN.AI?
+## What is Thuli AI?
 
 Farmers call a phone number, speak in Tamil (or any language), and get instant agricultural **decisions** — not information. The system uses real dam data, live weather, soil analysis, and ML crop recommendations to give actionable advice.
 
@@ -26,13 +26,13 @@ Farmers call a phone number, speak in Tamil (or any language), and get instant a
 | Layer | Technology |
 |-------|-----------|
 | Backend | FastAPI (Python) |
-| Database | MongoDB Atlas (motor async) |
-| AI | OpenAI GPT-4o-mini, Whisper-1, TTS-1 |
+| Database | PostgreSQL (SQLAlchemy async) |
+| AI | OpenAI GPT-4o-mini, Sarvam STT, Sarvam TTS |
 | Weather | WeatherAPI.com |
 | Phone | Exotel webhooks |
 | Frontend | React (Vite) + TailwindCSS |
 | Scraping | BeautifulSoup4 (dam data) |
-| ML | scikit-learn RandomForest (crop recommendation) |
+| ML |XGBoost(crop recommendation) |
 | Scheduler | APScheduler |
 
 ---
@@ -94,7 +94,8 @@ Create `backend/.env`:
 
 ```
 OPENAI_API_KEY=sk-...
-MONGODB_URI=mongodb+srv://...
+SARVAM_API_KEY=...
+DATABASE_URL=postgresql+asyncpg://...
 WEATHER_API_KEY=...
 EXOTEL_SID=...
 EXOTEL_TOKEN=...
@@ -107,7 +108,7 @@ BASE_URL=https://your-domain.com
 ## Architecture
 
 ```
-Phone Call → Exotel → Webhook → Whisper (STT)
+Phone Call → Exotel → Webhook → Sarvam (STT)
                                     ↓
                             Intent Detection (zero cost)
                                     ↓
@@ -118,7 +119,7 @@ Phone Call → Exotel → Webhook → Whisper (STT)
                                     ↓
                          GPT-4o-mini (lean context)
                                     ↓
-                              TTS-1 → Audio
+                              Sarvam (TTS) → Audio
                                     ↓
                             Exotel → Farmer hears response
 ```
@@ -189,8 +190,9 @@ Place these in `backend/datasets/`:
 
 ## Cost Breakdown
 
-- **OpenAI**: ~$5 covers entire hackathon (GPT-4o-mini + Whisper + TTS)
-- **MongoDB Atlas**: Free tier (512MB)
+- **OpenAI**: ~$5 covers entire hackathon (GPT-4o-mini)
+- **Sarvam AI**: STT/TTS costs
+- **PostgreSQL**: Free tier / self-hosted
 - **WeatherAPI**: Free tier (1M calls/month)
 - **Render.com**: Free tier
 - **Exotel**: Pay per call (~₹1/min)

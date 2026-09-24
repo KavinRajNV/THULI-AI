@@ -1,0 +1,4 @@
+Class,Precision,Recall,F1-Score,Support
+Adequate,0.92,0.94,0.93,450
+Shortage,0.91,0.88,0.89,210
+Surplus,0.93,0.91,0.92,180

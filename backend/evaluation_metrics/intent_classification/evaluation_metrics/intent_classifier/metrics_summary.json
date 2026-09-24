@@ -1,0 +1,19 @@
+{
+  "model": "IndicBERTv2-MLM-only fine-tune, KISAN-AI intent classifier",
+  "eval_set": "validation split (LLM-written data, same distribution as training)",
+  "n_examples": 157,
+  "accuracy": 0.9682,
+  "macro_f1": 0.9711,
+  "weighted_f1": 0.9681,
+  "boundary_rows": {
+    "n": 48,
+    "accuracy": 0.917
+  },
+  "other_rows": {
+    "n": 109,
+    "accuracy": 0.991
+  },
+  "n_misclassified": 5,
+  "epochs_trained": 5,
+  "best_epoch_by_val_macro_f1": 3
+}
