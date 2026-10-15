@@ -43,3 +43,10 @@ Thumbs.db
 # Static Folders
 static/
 frontend/
+
+# Datasets & ML Artifacts
+Dataset/
+datasets/
+backend/Dataset/
+backend/datasets/
+*.pkl

@@ -50,8 +50,9 @@ pip install -r requirements.txt
 # Copy .env and fill in your API keys
 cp .env.example .env
 
-# Place your dataset files in backend/datasets/
-# Place RandomForest.pkl in backend/datasets/models/
+# Datasets are excluded from GitHub (.gitignore)
+# Place your dataset files in backend/Dataset/ (or backend/datasets/)
+# Place model weights (RandomForest.pkl, XGBoost.pkl) in backend/Dataset/
 
 # Run
 uvicorn main:app --reload --port 8000
@@ -156,23 +157,28 @@ Phone Call → Exotel → Webhook → Sarvam (STT)
 
 ## Datasets Required
 
-Place these in `backend/datasets/`:
+> **Note:** All dataset files and trained ML weights (`backend/Dataset/`, `backend/datasets/`, and `*.pkl`) are **excluded from GitHub** via `.gitignore` to keep the repository lightweight and adhere to Git file size limits. Each teammate must place the dataset files locally in `backend/Dataset/` (or `backend/datasets/`).
+
+Place these in `backend/Dataset/` (or `backend/datasets/`):
 
 | File | Description |
 |------|-------------|
-| Villages.csv | 11,671 villages with pincode + district |
-| Soil_data.csv | 875 rows of district soil NPK data |
-| KrishnaGiri.csv | Krishnagiri district soil data |
-| Dharmapuri.csv | Dharmapuri district soil data |
-| Thanjvur_dataset.xlsx | Thanjavur district soil data |
-| cropdata_updated.csv | 16,411 crop stage records |
-| irrigation_prediction.csv | 10,000 irrigation need records |
-| Yield-data.csv | 1,000 yield prediction records |
-| plant_disease.csv | 113 disease symptom records |
-| Crop_recommendation.csv | 2,200 crop recommendation records |
-| tn_dam_irrigation_dataset.json | 14 dam → district mappings |
-| reservoir_data_3years.csv | 6,576 historical reservoir records |
-| models/RandomForest.pkl | Trained crop recommendation model |
+| `Villages.csv` | 11,671 villages with pincode + district |
+| `Soil data.csv` | 875 rows of district soil NPK data |
+| `KrishnaGiri.csv` | Krishnagiri district soil data |
+| `Dharmapuri.csv` | Dharmapuri district soil data |
+| `Thanjvur dataset.xlsx` | Thanjavur district soil data |
+| `cropdata_updated.csv` | 16,411 crop stage records |
+| `irrigation_prediction.csv` | 10,000 irrigation need records |
+| `Yield-data.csv` | 1,000 yield prediction records |
+| `plant_disease.csv` | 113 disease symptom records |
+| `Crop_recommendation.csv` | 2,200 crop recommendation records |
+| `Fertilizer_recommendation.csv` | Crop fertilizer recommendation records |
+| `tn_dam_irrigation_dataset.json` | 14 dam → district mappings |
+| `reservoir_data_3years.csv` | 6,576 historical reservoir records |
+| `tn_reservoir_10years_19dams.csv` | 10-year reservoir records across 19 Tamil Nadu dams (~8 MB) |
+| `RandomForest.pkl` | Trained crop recommendation model |
+| `XGBoost.pkl` | Trained recommendation / yield model |
 
 ---
 

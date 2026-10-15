@@ -35,6 +35,11 @@ Thumbs.db
 
 # ML model weights (too large for git)
 models/
+*.pkl
+
+# Datasets (excluded from git)
+Dataset/
+datasets/
 
 # Intent classification logs
 logs/
