@@ -44,7 +44,7 @@ def start_scheduler():
         try:
             from services.dam_service import analyze_dam_trend
             from services import weather_service, ai_service
-            from data.loader import DISTRICT_CENTROIDS
+            from services.loader import DISTRICT_CENTROIDS
 
             today_str = datetime.utcnow().strftime("%Y-%m-%d")
 

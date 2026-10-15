@@ -9,7 +9,7 @@ from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from database import async_session
 from models import WeatherCache
-import data.loader
+from services import loader
 
 async def get_weather(district: str = None, lat: float = None, lon: float = None) -> dict:
     """Fetch weather by lat/lon using Open-Meteo. District is used for fallback centroid lookup."""
@@ -19,7 +19,7 @@ async def get_weather(district: str = None, lat: float = None, lon: float = None
         if not district:
             return {"error": "No coordinates or district provided"}
         
-        CENTROIDS = data.loader.DISTRICT_CENTROIDS
+        CENTROIDS = loader.DISTRICT_CENTROIDS
         dl = district.lower().strip()
         found = False
         

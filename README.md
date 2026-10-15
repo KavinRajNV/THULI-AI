@@ -27,7 +27,7 @@ Farmers call a phone number, speak in Tamil (or any language), and get instant a
 |-------|-----------|
 | Backend | FastAPI (Python) |
 | Database | PostgreSQL (SQLAlchemy async) |
-| AI | OpenAI GPT-4o-mini, Sarvam STT, Sarvam TTS |
+| AI | OpenAI 5.6 Luna, Sarvam STT, Sarvam TTS |
 | Weather | WeatherAPI.com |
 | Phone | Exotel webhooks |
 | Frontend | React (Vite) + TailwindCSS |
@@ -118,7 +118,7 @@ Phone Call → Exotel → Webhook → Sarvam (STT)
                   Weather  Dam   Soil  Disease Fertilizer
                      └──────┴──────┴──────┴──────┘
                                     ↓
-                         GPT-4o-mini (lean context)
+                        OpenAI 5.6 Luna (lean context)
                                     ↓
                               Sarvam (TTS) → Audio
                                     ↓
@@ -157,7 +157,7 @@ Phone Call → Exotel → Webhook → Sarvam (STT)
 
 ## Datasets Required
 
-> **Note:** All dataset files and trained ML weights (`backend/Dataset/`, `backend/datasets/`, and `*.pkl`) are **excluded from GitHub** via `.gitignore` to keep the repository lightweight and adhere to Git file size limits. Each teammate must place the dataset files locally in `backend/Dataset/` (or `backend/datasets/`).
+> **Note:** All dataset files, generated vector indices, and trained ML weights (`backend/Dataset/`, `backend/datasets/`, `backend/data/`, and `*.pkl`) are **excluded from GitHub** via `.gitignore` to keep the repository lightweight and adhere to Git file size limits. Each teammate must place these files locally in `backend/Dataset/` and `backend/data/`.
 
 Place these in `backend/Dataset/` (or `backend/datasets/`):
 
@@ -196,7 +196,7 @@ Place these in `backend/Dataset/` (or `backend/datasets/`):
 
 ## Cost Breakdown
 
-- **OpenAI**: ~$5 covers entire hackathon (GPT-4o-mini)
+- **OpenAI**: ~$5 covers entire hackathon (OpenAI 5.6 Luna)
 - **Sarvam AI**: STT/TTS costs
 - **PostgreSQL**: Free tier / self-hosted
 - **WeatherAPI**: Free tier (1M calls/month)

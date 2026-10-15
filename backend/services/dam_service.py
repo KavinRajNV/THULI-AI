@@ -10,7 +10,7 @@ from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from database import async_session
 from models import DamStatus
-import data.loader
+from services import loader
 
 # Dam name variants (Tamil + English + Tanglish)
 DAM_NAMES = {
@@ -73,7 +73,7 @@ async def get_dam_context(district=None, farmer_text=""):
     # Priority 2: district mapping
     if district:
         dl = district.lower().strip()
-        dam_json = data.loader.DAM_IRRIGATION_DATA
+        dam_json = loader.DAM_IRRIGATION_DATA
         entries = dam_json if isinstance(dam_json, list) else (
             list(dam_json.values()) if isinstance(dam_json, dict) else [])
         for entry in entries:
@@ -96,7 +96,7 @@ async def get_dam_context(district=None, farmer_text=""):
 
 
 def analyze_dam_trend(dam_name):
-    rdf = data.loader.RESERVOIR_DF
+    rdf = loader.RESERVOIR_DF
     if rdf.empty:
         return {"note": "No historical data", "confidence": "low",
                 "historical_avg_storage_pct": None, "release_likely": False}

@@ -2,7 +2,7 @@
 services/crop_service.py — Crop recommendation with model crash fallback.
 If RandomForest fails (version mismatch), uses rule-based recommendation.
 """
-import data.loader
+from services import loader
 
 # Rule-based fallback when ML model crashes
 CROP_RULES = {
@@ -33,7 +33,7 @@ TN_DISTRICT_CROPS = {
 def recommend_crop(district, weather=None):
     """Try ML model first, fall back to rules if it crashes."""
     # Try ML model
-    if data.loader.CROP_MODEL is not None:
+    if loader.CROP_MODEL is not None:
         try:
             result = _ml_recommend(district, weather)
             if result and "Error" not in result:
@@ -60,7 +60,7 @@ def _ml_recommend(district, weather):
                 temp, humidity, soil.get("pH", 6.5), rainfall]
     ranges = [(0, 140), (5, 145), (5, 205), (8, 44), (14, 100), (3.5, 9.9), (20, 298)]
     clamped = [max(lo, min(hi, float(v) if v else (lo + hi) / 2)) for v, (lo, hi) in zip(features, ranges)]
-    pred = data.loader.CROP_MODEL.predict([clamped])
+    pred = loader.CROP_MODEL.predict([clamped])
     print(f"🌾 ML prediction: {pred[0]}")
     return str(pred[0])
 
@@ -110,7 +110,7 @@ def _rule_based_recommend(district, weather):
 
 
 def get_crop_stage(crop, days):
-    cdf = data.loader.CROPDATA_DF
+    cdf = loader.CROPDATA_DF
     if cdf.empty or not crop:
         return _est(days)
     cc = next((c for c in ["crop_ID", "crop_id", "Crop"] if c in cdf.columns), None)
@@ -139,7 +139,7 @@ def _est(d):
 
 def get_irrigation_need(crop, days, district):
     stage = get_crop_stage(crop, days)
-    idf = data.loader.IRRIGATION_DF
+    idf = loader.IRRIGATION_DF
     if idf.empty:
         return f"Stage: {stage}. Irrigation data unavailable."
     cc = next((c for c in ["Crop_Type", "crop_type"] if c in idf.columns), None)

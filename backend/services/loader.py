@@ -1,13 +1,26 @@
 """
-data/loader.py — Load all datasets into memory at startup.
+services/loader.py — Load all datasets into memory at startup.
 Global DataFrames / dicts accessed by services.
 """
 
 import json
 import os
 import pickle
+import sys
 
 import pandas as pd
+
+
+def safe_print(msg: str):
+    """Safely print messages, avoiding UnicodeEncodeError on cp1252 Windows consoles."""
+    try:
+        print(msg)
+    except UnicodeEncodeError:
+        try:
+            print(msg.encode("ascii", errors="replace").decode("ascii"))
+        except Exception:
+            pass
+
 
 # ─── Find the dataset directory automatically ─────────────────────────
 # Your CSVs could be in any of these locations depending on how you set up.
@@ -33,13 +46,13 @@ def _find_dataset_dir():
         if os.path.isdir(abs_p):
             csv_files = [f for f in os.listdir(abs_p) if f.endswith((".csv", ".pkl", ".json", ".xlsx"))]
             if len(csv_files) >= 3:  # At least a few data files
-                print(f"📂 Dataset directory found: {abs_p} ({len(csv_files)} data files)")
+                safe_print(f"📂 Dataset directory found: {abs_p} ({len(csv_files)} data files)")
                 return abs_p
     # Fallback
     fallback = os.path.abspath(_candidates[0])
-    print(f"⚠️  No dataset directory found! Looked in:")
+    safe_print("⚠️  No dataset directory found! Looked in:")
     for p in _candidates:
-        print(f"     {os.path.abspath(p)} — {'EXISTS' if os.path.isdir(p) else 'NOT FOUND'}")
+        safe_print(f"     {os.path.abspath(p)} — {'EXISTS' if os.path.isdir(p) else 'NOT FOUND'}")
     return fallback
 
 
@@ -58,9 +71,51 @@ DISEASE_DF: pd.DataFrame = pd.DataFrame()
 CROP_REC_DF: pd.DataFrame = pd.DataFrame()
 RESERVOIR_DF: pd.DataFrame = pd.DataFrame()
 
+# Fallback district centroids (all 38 districts of Tamil Nadu)
+DEFAULT_DISTRICT_CENTROIDS = {
+    "Thanjavur": {"lat": 10.787, "lon": 79.139},
+    "Krishnagiri": {"lat": 12.519, "lon": 78.213},
+    "Dharmapuri": {"lat": 12.127, "lon": 78.157},
+    "Salem": {"lat": 11.664, "lon": 78.146},
+    "Erode": {"lat": 11.341, "lon": 77.717},
+    "Coimbatore": {"lat": 11.017, "lon": 76.955},
+    "Tiruppur": {"lat": 11.108, "lon": 77.341},
+    "Madurai": {"lat": 9.925, "lon": 78.119},
+    "Tirunelveli": {"lat": 8.727, "lon": 77.695},
+    "Vellore": {"lat": 12.916, "lon": 79.133},
+    "Tiruchirappalli": {"lat": 10.805, "lon": 78.687},
+    "Karur": {"lat": 10.961, "lon": 78.081},
+    "Namakkal": {"lat": 11.219, "lon": 78.167},
+    "Nagapattinam": {"lat": 10.765, "lon": 79.842},
+    "Tiruvarur": {"lat": 10.774, "lon": 79.637},
+    "Cuddalore": {"lat": 11.748, "lon": 79.768},
+    "Villupuram": {"lat": 11.939, "lon": 79.492},
+    "Kallakurichi": {"lat": 11.737, "lon": 78.959},
+    "Tiruvannamalai": {"lat": 12.226, "lon": 79.067},
+    "Ramanathapuram": {"lat": 9.371, "lon": 78.830},
+    "Virudhunagar": {"lat": 9.581, "lon": 77.962},
+    "Sivagangai": {"lat": 9.847, "lon": 78.481},
+    "Dindigul": {"lat": 10.362, "lon": 77.971},
+    "Theni": {"lat": 10.010, "lon": 77.477},
+    "Thoothukudi": {"lat": 8.791, "lon": 78.132},
+    "Kanniyakumari": {"lat": 8.088, "lon": 77.552},
+    "Ariyalur": {"lat": 11.140, "lon": 79.078},
+    "Perambalur": {"lat": 11.233, "lon": 78.880},
+    "Mayiladuthurai": {"lat": 11.102, "lon": 79.652},
+    "Tenkasi": {"lat": 8.959, "lon": 77.315},
+    "Chengalpattu": {"lat": 12.682, "lon": 79.983},
+    "Tirupathur": {"lat": 12.492, "lon": 78.563},
+    "Ranipet": {"lat": 12.927, "lon": 79.333},
+    "Kanchipuram": {"lat": 12.834, "lon": 79.703},
+    "Tiruvallur": {"lat": 13.143, "lon": 79.907},
+    "Chennai": {"lat": 13.082, "lon": 80.270},
+    "Pudukkottai": {"lat": 10.383, "lon": 78.820},
+    "Nilgiris": {"lat": 11.410, "lon": 76.695}
+}
+
 # ─── Global dicts / models ───────────────────────────────────────────
 DAM_IRRIGATION_DATA: dict = {}
-DISTRICT_CENTROIDS: dict = {}
+DISTRICT_CENTROIDS: dict = dict(DEFAULT_DISTRICT_CENTROIDS)
 CROP_MODEL = None  # RandomForest.pkl
 
 
@@ -83,9 +138,9 @@ def _safe_read_csv(path: str, **kwargs) -> pd.DataFrame:
             for f in os.listdir(dirname):
                 if f.lower() == basename.lower():
                     return pd.read_csv(os.path.join(dirname, f), **kwargs)
-        print(f"⚠️  File not found: {path}")
+        safe_print(f"⚠️  File not found: {path}")
     except Exception as e:
-        print(f"⚠️  Error loading {path}: {e}")
+        safe_print(f"⚠️  Error loading {path}: {e}")
     return pd.DataFrame()
 
 
@@ -112,25 +167,25 @@ def load_all_datasets():
     global CROPDATA_DF, IRRIGATION_DF, YIELD_DF, DISEASE_DF, CROP_REC_DF
     global RESERVOIR_DF, DAM_IRRIGATION_DATA, DISTRICT_CENTROIDS, CROP_MODEL
 
-    print(f"📂 Loading datasets from: {BASE}")
+    safe_print(f"📂 Loading datasets from: {BASE}")
 
     # Villages (pincode/district resolver)
     VILLAGES_DF = _safe_read_csv(os.path.join(BASE, "Villages.csv"))
     if not VILLAGES_DF.empty:
         VILLAGES_DF.columns = [c.strip() for c in VILLAGES_DF.columns]
-        print(f"   ✅ Villages: {len(VILLAGES_DF)} rows")
+        safe_print(f"   ✅ Villages: {len(VILLAGES_DF)} rows")
 
     # Generic soil data (all districts) — handles "Soil data.csv" and "Soil_data.csv"
     SOIL_DF = _safe_read_csv(_find_file(BASE, "Soil_data.csv", "Soil data.csv"))
     if not SOIL_DF.empty:
         SOIL_DF.columns = [c.strip() for c in SOIL_DF.columns]
-        print(f"   ✅ Soil_data: {len(SOIL_DF)} rows")
+        safe_print(f"   ✅ Soil_data: {len(SOIL_DF)} rows")
 
     # District-specific soil files
     KRISHNAGIRI_DF = _safe_read_csv(os.path.join(BASE, "KrishnaGiri.csv"))
     if not KRISHNAGIRI_DF.empty:
         KRISHNAGIRI_DF.columns = [c.strip() for c in KRISHNAGIRI_DF.columns]
-        print(f"   ✅ KrishnaGiri: {len(KRISHNAGIRI_DF)} rows")
+        safe_print(f"   ✅ KrishnaGiri: {len(KRISHNAGIRI_DF)} rows")
 
     # Dharmapuri — skip first 2 garbage header rows
     DHARMAPURI_DF = _safe_read_csv(os.path.join(BASE, "Dharmapuri.csv"), skiprows=2)
@@ -139,7 +194,7 @@ def load_all_datasets():
                          "Sand", "Silt", "Clay", "TexturalClass", "District"]
         if len(DHARMAPURI_DF.columns) == len(expected_cols):
             DHARMAPURI_DF.columns = expected_cols
-        print(f"   ✅ Dharmapuri: {len(DHARMAPURI_DF)} rows")
+        safe_print(f"   ✅ Dharmapuri: {len(DHARMAPURI_DF)} rows")
 
     # Thanjavur (Excel) — handles "Thanjvur dataset.xlsx" and "Thanjvur_dataset.xlsx"
     try:
@@ -147,41 +202,41 @@ def load_all_datasets():
         if os.path.exists(xlsx_path):
             THANJAVUR_DF = pd.read_excel(xlsx_path)
             THANJAVUR_DF.columns = [c.strip() for c in THANJAVUR_DF.columns]
-            print(f"   ✅ Thanjavur: {len(THANJAVUR_DF)} rows")
+            safe_print(f"   ✅ Thanjavur: {len(THANJAVUR_DF)} rows")
     except Exception as e:
-        print(f"⚠️  Thanjavur load error: {e}")
+        safe_print(f"⚠️  Thanjavur load error: {e}")
 
     # Crop data (stage tracking)
     CROPDATA_DF = _safe_read_csv(os.path.join(BASE, "cropdata_updated.csv"))
     if not CROPDATA_DF.empty:
-        print(f"   ✅ cropdata_updated: {len(CROPDATA_DF)} rows")
+        safe_print(f"   ✅ cropdata_updated: {len(CROPDATA_DF)} rows")
 
     # Irrigation prediction
     IRRIGATION_DF = _safe_read_csv(os.path.join(BASE, "irrigation_prediction.csv"))
     if not IRRIGATION_DF.empty:
-        print(f"   ✅ irrigation_prediction: {len(IRRIGATION_DF)} rows")
+        safe_print(f"   ✅ irrigation_prediction: {len(IRRIGATION_DF)} rows")
 
     # Yield data
     YIELD_DF = _safe_read_csv(os.path.join(BASE, "Yield-data.csv"))
     if not YIELD_DF.empty:
-        print(f"   ✅ Yield-data: {len(YIELD_DF)} rows")
+        safe_print(f"   ✅ Yield-data: {len(YIELD_DF)} rows")
 
     # Plant diseases
     DISEASE_DF = _safe_read_csv(os.path.join(BASE, "plant_disease.csv"))
     if not DISEASE_DF.empty:
-        print(f"   ✅ plant_disease: {len(DISEASE_DF)} rows")
+        safe_print(f"   ✅ plant_disease: {len(DISEASE_DF)} rows")
 
     # Crop recommendation reference
     CROP_REC_DF = _safe_read_csv(os.path.join(BASE, "Crop_recommendation.csv"))
     if not CROP_REC_DF.empty:
-        print(f"   ✅ Crop_recommendation: {len(CROP_REC_DF)} rows")
+        safe_print(f"   ✅ Crop_recommendation: {len(CROP_REC_DF)} rows")
 
     # Reservoir 10-year history
     RESERVOIR_DF = _safe_read_csv(os.path.join(BASE, "tn_reservoir_10years_19dams.csv"))
     if not RESERVOIR_DF.empty:
         if "date" in RESERVOIR_DF.columns:
             RESERVOIR_DF["date"] = pd.to_datetime(RESERVOIR_DF["date"], errors="coerce")
-        print(f"   ✅ tn_reservoir_10years_19dams: {len(RESERVOIR_DF)} rows")
+        safe_print(f"   ✅ tn_reservoir_10years_19dams: {len(RESERVOIR_DF)} rows")
 
     # Dam irrigation dataset (JSON)
     try:
@@ -189,19 +244,31 @@ def load_all_datasets():
         if os.path.exists(json_path):
             with open(json_path, "r", encoding="utf-8") as f:
                 DAM_IRRIGATION_DATA = json.load(f)
-            print(f"   ✅ tn_dam_irrigation_dataset: loaded")
+            safe_print(f"   ✅ tn_dam_irrigation_dataset: loaded")
     except Exception as e:
-        print(f"⚠️  Dam JSON load error: {e}")
+        safe_print(f"⚠️  Dam JSON load error: {e}")
 
-    # District centroids (in data/ folder, not datasets)
+    # District centroids (checks data/ folder, datasets, or uses default coordinates)
     try:
-        centroid_path = os.path.join(os.path.dirname(__file__), "district_centroids.json")
-        if os.path.exists(centroid_path):
-            with open(centroid_path, "r", encoding="utf-8") as f:
-                DISTRICT_CENTROIDS = json.load(f)
-            print(f"   ✅ district_centroids: {len(DISTRICT_CENTROIDS)} districts")
+        candidate_centroid_paths = [
+            os.path.join(_backend_dir, "data", "district_centroids.json"),
+            os.path.join(BASE, "district_centroids.json"),
+            os.path.join(os.path.dirname(__file__), "district_centroids.json"),
+        ]
+        loaded_centroids = False
+        for cpath in candidate_centroid_paths:
+            if os.path.exists(cpath):
+                with open(cpath, "r", encoding="utf-8") as f:
+                    DISTRICT_CENTROIDS = json.load(f)
+                safe_print(f"   ✅ district_centroids: {len(DISTRICT_CENTROIDS)} districts loaded from {cpath}")
+                loaded_centroids = True
+                break
+        if not loaded_centroids:
+            DISTRICT_CENTROIDS = dict(DEFAULT_DISTRICT_CENTROIDS)
+            safe_print(f"   ✅ district_centroids: {len(DISTRICT_CENTROIDS)} districts initialized with default Tamil Nadu coordinates")
     except Exception as e:
-        print(f"⚠️  Centroid load error: {e}")
+        safe_print(f"⚠️  Centroid load error: {e}")
+        DISTRICT_CENTROIDS = dict(DEFAULT_DISTRICT_CENTROIDS)
 
     # RandomForest model — might be in models/ subfolder or at root
     try:
@@ -212,8 +279,8 @@ def load_all_datasets():
         if os.path.exists(model_path):
             with open(model_path, "rb") as f:
                 CROP_MODEL = pickle.load(f)
-            print(f"   ✅ RandomForest.pkl: loaded")
+            safe_print(f"   ✅ RandomForest.pkl: loaded")
     except Exception as e:
-        print(f"⚠️  Model load error: {e}")
+        safe_print(f"⚠️  Model load error: {e}")
 
-    print("✅ Dataset loading complete.")
+    safe_print("✅ Dataset loading complete.")

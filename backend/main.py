@@ -21,7 +21,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from routers import chat, admin, alerts
 from Exotel import exotel
-from data.loader import load_all_datasets
+from services.loader import load_all_datasets
 from scheduler import start_scheduler
 
 

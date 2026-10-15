@@ -5,7 +5,7 @@ Integrates Thuli-AI pincode logic.
 import re
 import requests
 import time
-import data.loader
+from services import loader
 
 PIN_API = "https://api.pincodeapi.in/api/v1/pincode"
 NOMINATIM_SEARCH_API = "https://nominatim.openstreetmap.org/search"
@@ -96,7 +96,7 @@ def resolve_location(pincode=None, village_name=None) -> dict:
     # The original script relies on PIN logic as base
     if not pincode:
         # Fallback to centroid logic if no pincode but village is known (from original codebase)
-        CENTROIDS = data.loader.DISTRICT_CENTROIDS
+        CENTROIDS = loader.DISTRICT_CENTROIDS
         if village_name and CENTROIDS:
             dl = village_name.lower().strip()
             for key, coords in CENTROIDS.items():
@@ -165,6 +165,6 @@ def extract_pincode(text):
     return m.group(1) if m else None
 
 def extract_district_name(text):
-    for d in data.loader.DISTRICT_CENTROIDS:
+    for d in loader.DISTRICT_CENTROIDS:
         if d.lower() in text.lower(): return d
     return None
