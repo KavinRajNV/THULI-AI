@@ -3,6 +3,8 @@ venv/
 .venv/
 env/
 ENV/
+env.bak/
+venv.bak/
 
 # Python Cache & Bytecode
 __pycache__/
@@ -23,14 +25,29 @@ build/
 
 # Environment Variables & Secrets
 .env
-.env.local
-.env.*.local
+.env.*
 *.env
+*.env.local
 
-# Logs & Databases
+# AWS Credentials, Certificates & Keys
+*.pem
+*.key
+*.crt
+*.pfx
+.aws/
+*aws/credentials*
+*aws/config*
+
+# Logs & Databases & Local Dumps
 *.log
 *.sqlite3
 *.db
+*.sql
+*.dump
+*.tar
+*.tar.gz
+*.sql.gz
+dump.rdb
 
 # Operating System & IDE
 .DS_Store
@@ -44,10 +61,19 @@ Thumbs.db
 static/
 frontend/
 
-# Datasets & ML Artifacts
+# Datasets & Large ML Artifacts (>50 MB binaries)
 Dataset/
 datasets/
 backend/Dataset/
 backend/datasets/
 backend/data/
+backend/models/
+models/
 *.pkl
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.onnx
+*.h5
+

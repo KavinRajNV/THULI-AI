@@ -1,0 +1,125 @@
+{
+  "family": "thuli-ai-backend",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "_comment_sizing": "Fargate size: 256 cpu / 512 memory is lowest cost (0.25 vCPU / 0.5 GB). To run the full IndicBERT transformer in memory instead of rules fallback, increase cpu to 1024 (1 vCPU) and memory to 2048 (2 GB).",
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::<AWS_ACCOUNT_ID>:role/<ECS_EXECUTION_ROLE_NAME>",
+  "taskRoleArn": "arn:aws:iam::<AWS_ACCOUNT_ID>:role/<ECS_TASK_ROLE_NAME>",
+  "containerDefinitions": [
+    {
+      "name": "thuli-ai-backend",
+      "image": "<AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/<ECR_REPOSITORY_NAME>:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8000,
+          "hostPort": 8000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "PORT",
+          "value": "8000"
+        },
+        {
+          "name": "AWS_REGION",
+          "value": "<AWS_REGION>"
+        },
+        {
+          "name": "S3_BUCKET",
+          "value": "<S3_BUCKET_NAME>"
+        },
+        {
+          "name": "S3_MODEL_PREFIX",
+          "value": "models/"
+        },
+        {
+          "name": "S3_AUDIO_PREFIX",
+          "value": "audio/calls/"
+        },
+        {
+          "name": "S3_UPLOAD_AUDIO",
+          "value": "false"
+        },
+        {
+          "name": "INTENT_BACKEND",
+          "value": "rules"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "SARVAM_API_KEY",
+          "valueFrom": "arn:aws:secretsmanager:<AWS_REGION>:<AWS_ACCOUNT_ID>:secret:<SECRET_NAME>:SARVAM_API_KEY::"
+        },
+        {
+          "name": "GROQ_API_KEY",
+          "valueFrom": "arn:aws:secretsmanager:<AWS_REGION>:<AWS_ACCOUNT_ID>:secret:<SECRET_NAME>:GROQ_API_KEY::"
+        },
+        {
+          "name": "DATABASE_URL",
+          "valueFrom": "arn:aws:secretsmanager:<AWS_REGION>:<AWS_ACCOUNT_ID>:secret:<SECRET_NAME>:DATABASE_URL::"
+        },
+        {
+          "name": "DATABASE_URL_SYNC",
+          "valueFrom": "arn:aws:secretsmanager:<AWS_REGION>:<AWS_ACCOUNT_ID>:secret:<SECRET_NAME>:DATABASE_URL_SYNC::"
+        },
+        {
+          "name": "EXOTEL_API_KEY",
+          "valueFrom": "arn:aws:secretsmanager:<AWS_REGION>:<AWS_ACCOUNT_ID>:secret:<SECRET_NAME>:EXOTEL_API_KEY::"
+        },
+        {
+          "name": "EXOTEL_API_TOKEN",
+          "valueFrom": "arn:aws:secretsmanager:<AWS_REGION>:<AWS_ACCOUNT_ID>:secret:<SECRET_NAME>:EXOTEL_API_TOKEN::"
+        },
+        {
+          "name": "EXOTEL_SID",
+          "valueFrom": "arn:aws:secretsmanager:<AWS_REGION>:<AWS_ACCOUNT_ID>:secret:<SECRET_NAME>:EXOTEL_SID::"
+        },
+        {
+          "name": "EXOTEL_VIRTUAL_NUMBER",
+          "valueFrom": "arn:aws:secretsmanager:<AWS_REGION>:<AWS_ACCOUNT_ID>:secret:<SECRET_NAME>:EXOTEL_VIRTUAL_NUMBER::"
+        },
+        {
+          "name": "BASE_URL",
+          "valueFrom": "arn:aws:secretsmanager:<AWS_REGION>:<AWS_ACCOUNT_ID>:secret:<SECRET_NAME>:BASE_URL::"
+        },
+        {
+          "name": "GEMINI_API_KEY",
+          "valueFrom": "arn:aws:secretsmanager:<AWS_REGION>:<AWS_ACCOUNT_ID>:secret:<SECRET_NAME>:GEMINI_API_KEY::"
+        },
+        {
+          "name": "OPENAI_API_KEY",
+          "valueFrom": "arn:aws:secretsmanager:<AWS_REGION>:<AWS_ACCOUNT_ID>:secret:<SECRET_NAME>:OPENAI_API_KEY::"
+        },
+        {
+          "name": "WEATHER_API_KEY",
+          "valueFrom": "arn:aws:secretsmanager:<AWS_REGION>:<AWS_ACCOUNT_ID>:secret:<SECRET_NAME>:WEATHER_API_KEY::"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/<ECS_SERVICE_NAME>",
+          "awslogs-region": "<AWS_REGION>",
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-create-group": "true"
+        }
+      },
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()\" || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 60
+      }
+    }
+  ]
+}

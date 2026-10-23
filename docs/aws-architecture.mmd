@@ -1,0 +1,83 @@
+graph TB
+    subgraph Users ["External Actors & Channels"]
+        Farmer["Farmer (Button Phone)"]
+        Dev["Developer (Git Push to main)"]
+    end
+
+    subgraph ExternalServices ["External Telephony & AI Services"]
+        Exotel["Exotel Cloud Telephony (IVR / Webhook)"]
+        Sarvam["Sarvam AI (STT & TTS)"]
+        GroqOpenAI["LLM Providers (Groq / OpenAI 5.6 Luna)"]
+        WeatherAPI["WeatherAPI.com (Forecast & Live Weather)"]
+        PostgresDB[("PostgreSQL + PostGIS Database")]
+    end
+
+    subgraph CICD ["CI/CD Automation"]
+        GHA["GitHub Actions Runner"]
+        OIDC["GitHub OIDC Token Provider"]
+    end
+
+    subgraph AWSCloud ["AWS Cloud (Region: ap-south-1)"]
+        subgraph IAMSecurity ["Identity & Access Management"]
+            DeployRole["GitHub Deploy IAM Role"]
+            ExecRole["ECS Task Execution Role"]
+            TaskRole["ECS Task IAM Role"]
+        end
+
+        subgraph Ingestion ["Ingress & Ingestion Layer"]
+            HTTPSIngress["HTTPS Endpoint (ALB or Cloudflare Tunnel)"]
+        end
+
+        subgraph ECSCluster ["Amazon ECS Cluster (Fargate Serverless)"]
+            subgraph FargateTask ["ECS Fargate Task (0.25 vCPU / 0.5 GB RAM)"]
+                FastAPI["FastAPI Application (Port 8000, Non-Root appuser)"]
+                StorageMod["app/storage.py (S3 Sync & Audio Uploader)"]
+                HealthCheck["Health Check (/health)"]
+            end
+        end
+
+        subgraph StorageLayer ["Object & Configuration Storage"]
+            ECR["Amazon ECR (Docker Image Repository)"]
+            
+            subgraph S3Bucket ["Amazon S3 Bucket"]
+                S3Models["s3://bucket/models/ (Weights & Datasets)"]
+                S3Audio["s3://bucket/audio/calls/ (Recorded Audio)"]
+            end
+
+            SecretsMgr["AWS Secrets Manager (API Keys & DB Credentials)"]
+            CloudWatch["Amazon CloudWatch Logs (/ecs/thuli-ai-service)"]
+        end
+    end
+
+    %% CI/CD Flow
+    Dev -->|"Push commit"| GHA
+    GHA -->|"Request JWT"| OIDC
+    OIDC -->|"AssumeRoleWithWebIdentity"| DeployRole
+    DeployRole -->|"Build & Push Docker image"| ECR
+    DeployRole -->|"Render task def & update service"| ECSCluster
+
+    %% Execution & Runtime Startup Flow
+    ExecRole -->|"Pull container image"| ECR
+    ExecRole -->|"Inject secrets at container start"| SecretsMgr
+    ExecRole -->|"Initialize log stream"| CloudWatch
+    ECR -.->|"Run container"| FastAPI
+
+    %% Application Startup & S3 Flow
+    FastAPI -->|"Startup init"| StorageMod
+    TaskRole -->|"s3:GetObject (startup download)"| S3Models
+    StorageMod -->|"Read models"| S3Models
+
+    %% Live Call Audio Flow
+    Farmer -->|"PSTN Phone Call"| Exotel
+    Exotel -->|"HTTP POST /exotel/incoming"| HTTPSIngress
+    HTTPSIngress -->|"Forward port 8000"| FastAPI
+    FastAPI -->|"Background audio upload"| StorageMod
+    StorageMod -->|"s3:PutObject"| S3Audio
+    TaskRole -->|"s3:PutObject permission"| S3Audio
+
+    %% Application Integration Flow
+    FastAPI -->|"Transcribe & Synthesize"| Sarvam
+    FastAPI -->|"Agri Decision Prompt"| GroqOpenAI
+    FastAPI -->|"Live Forecast"| WeatherAPI
+    FastAPI -->|"Farmer state & history"| PostgresDB
+    FastAPI -->|"Stdout/Stderr Logs"| CloudWatch

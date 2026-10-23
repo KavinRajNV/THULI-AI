@@ -1,10 +1,58 @@
-**/__pycache__
-**/*.pyc
-**/venv
-**/.env
-**/.pytest_cache
-backend/logs
-frontend
-admin_portal
+# Git & IDE
 .git
+.github
 .vscode
+.idea
+*.swp
+*.swo
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+**/venv/**
+**/.venv/**
+
+# Python cache & build
+**/__pycache__/**
+**/*.py[cod]
+**/.pytest_cache/**
+.coverage
+htmlcov/
+
+# Environment Variables & Secrets
+**/.env*
+*.env
+*.pem
+*.key
+*.crt
+.aws/
+
+# Frontend directories not needed in backend API container
+frontend/
+admin_portal/
+
+# Large ML models and local datasets (streamed from S3 in cloud)
+backend/models/**
+models/**
+backend/Dataset/**
+backend/datasets/**
+Dataset/**
+datasets/**
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.onnx
+*.pkl
+
+# Local runtime data & logs
+backend/logs/**
+static/calls/**
+*.log
+*.sqlite3
+*.db
+*.sql
+*.dump
+*.tar*

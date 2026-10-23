@@ -1,0 +1,46 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "S3ListModelBucket",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": "arn:aws:s3:::<S3_BUCKET_NAME>",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "<S3_MODEL_PREFIX>*",
+            "<S3_MODEL_PREFIX>"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "S3ReadModelArtifacts",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "arn:aws:s3:::<S3_BUCKET_NAME>/<S3_MODEL_PREFIX>*"
+    },
+    {
+      "Sid": "S3WriteAudioRecordings",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": "arn:aws:s3:::<S3_BUCKET_NAME>/<S3_AUDIO_PREFIX>*"
+    },
+    {
+      "Sid": "CloudWatchAppLogs",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:<AWS_REGION>:<AWS_ACCOUNT_ID>:log-group:/ecs/<ECS_SERVICE_NAME>:*"
+    }
+  ]
+}

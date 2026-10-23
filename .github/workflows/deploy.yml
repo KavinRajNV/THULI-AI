@@ -1,0 +1,131 @@
+name: Deploy Thuli AI to AWS ECS Fargate
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  id-token: write   # Required for requesting the JWT from GitHub OIDC provider
+  contents: read    # Required to checkout repository code
+
+jobs:
+  deploy:
+    name: Build, Push to ECR & Deploy to ECS
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION || 'ap-south-1' }}
+      ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY || 'thuli-ai' }}
+      ECS_CLUSTER: ${{ vars.ECS_CLUSTER || 'thuli-ai-cluster' }}
+      ECS_SERVICE: ${{ vars.ECS_SERVICE || 'thuli-ai-service' }}
+      CONTAINER_NAME: thuli-ai-backend
+      TASK_DEFINITION_FILE: deploy/aws/ecs-task-definition.json
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Authenticate securely with AWS via OIDC (No long-lived access keys!)
+      - name: Configure AWS Credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+          audience: sts.amazonaws.com
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, Tag, and Push Docker Image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          IMAGE_URI="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          LATEST_URI="$ECR_REGISTRY/$ECR_REPOSITORY:latest"
+
+          echo "Building Docker image: $IMAGE_URI"
+          docker build \
+            -f backend/Dockerfile \
+            -t "$IMAGE_URI" \
+            -t "$LATEST_URI" \
+            .
+
+          echo "Pushing image to ECR..."
+          docker push "$IMAGE_URI"
+          docker push "$LATEST_URI"
+
+          echo "image=$IMAGE_URI" >> $GITHUB_OUTPUT
+
+      - name: Prepare Task Definition
+        id: prepare-task-def
+        env:
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          SECRET_NAME: ${{ vars.SECRET_NAME || 'thuli-ai/production' }}
+          S3_BUCKET_NAME: ${{ vars.S3_BUCKET_NAME || 'thuli-ai-models' }}
+          ECS_EXECUTION_ROLE_NAME: ${{ vars.ECS_EXECUTION_ROLE_NAME || 'ThuliAI-ECSTaskExecutionRole' }}
+          ECS_TASK_ROLE_NAME: ${{ vars.ECS_TASK_ROLE_NAME || 'ThuliAI-ECSTaskRole' }}
+          ECS_SERVICE_NAME: ${{ env.ECS_SERVICE }}
+        run: |
+          # Replace placeholder strings in task definition if repository variables are configured
+          python3 -c "
+          import os, json
+
+          task_def_path = '${{ env.TASK_DEFINITION_FILE }}'
+          with open(task_def_path, 'r') as f:
+              content = f.read()
+
+          account_id = os.getenv('AWS_ACCOUNT_ID', '<AWS_ACCOUNT_ID>')
+          region = os.getenv('AWS_REGION', '<AWS_REGION>')
+          secret_name = os.getenv('SECRET_NAME', '<SECRET_NAME>')
+          bucket_name = os.getenv('S3_BUCKET_NAME', '<S3_BUCKET_NAME>')
+          exec_role = os.getenv('ECS_EXECUTION_ROLE_NAME', '<ECS_EXECUTION_ROLE_NAME>')
+          task_role = os.getenv('ECS_TASK_ROLE_NAME', '<ECS_TASK_ROLE_NAME>')
+          service_name = os.getenv('ECS_SERVICE_NAME', '<ECS_SERVICE_NAME>')
+          repo_name = os.getenv('ECR_REPOSITORY', '<ECR_REPOSITORY_NAME>')
+
+          replacements = {
+              '<AWS_ACCOUNT_ID>': account_id,
+              '<AWS_REGION>': region,
+              '<SECRET_NAME>': secret_name,
+              '<S3_BUCKET_NAME>': bucket_name,
+              '<ECS_EXECUTION_ROLE_NAME>': exec_role,
+              '<ECS_TASK_ROLE_NAME>': task_role,
+              '<ECS_SERVICE_NAME>': service_name,
+              '<ECR_REPOSITORY_NAME>': repo_name,
+          }
+
+          for placeholder, val in replacements.items():
+              if val:
+                  content = content.replace(placeholder, val)
+
+          parsed = json.loads(content)
+          # Clean up any non-ECS comments
+          parsed.pop('_comment_sizing', None)
+
+          out_file = 'task-def-rendered.json'
+          with open(out_file, 'w') as f:
+              json.dump(parsed, f, indent=2)
+
+          print(f'Prepared task definition at {out_file}')
+          "
+
+      - name: Render Amazon ECS Task Definition
+        id: render-task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-def-rendered.json
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ steps.build-image.outputs.image }}
+
+      - name: Deploy to Amazon ECS Service
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render-task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true

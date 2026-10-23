@@ -1,0 +1,67 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ECRAuthToken",
+      "Effect": "Allow",
+      "Action": [
+        "ecr:GetAuthorizationToken"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "ECRImagePull",
+      "Effect": "Allow",
+      "Action": [
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchGetImage"
+      ],
+      "Resource": "arn:aws:ecr:<AWS_REGION>:<AWS_ACCOUNT_ID>:repository/<ECR_REPOSITORY_NAME>"
+    },
+    {
+      "Sid": "CloudWatchLogs",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents",
+        "logs:CreateLogGroup"
+      ],
+      "Resource": [
+        "arn:aws:logs:<AWS_REGION>:<AWS_ACCOUNT_ID>:log-group:/ecs/<ECS_SERVICE_NAME>",
+        "arn:aws:logs:<AWS_REGION>:<AWS_ACCOUNT_ID>:log-group:/ecs/<ECS_SERVICE_NAME>:*"
+      ]
+    },
+    {
+      "Sid": "SecretsManagerRead",
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:GetSecretValue"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:<AWS_REGION>:<AWS_ACCOUNT_ID>:secret:<SECRET_NAME>*"
+      ]
+    },
+    {
+      "Sid": "SSMParameterRead",
+      "Effect": "Allow",
+      "Action": [
+        "ssm:GetParameters",
+        "ssm:GetParameter"
+      ],
+      "Resource": [
+        "arn:aws:ssm:<AWS_REGION>:<AWS_ACCOUNT_ID>:parameter/<APP_NAME>/*"
+      ]
+    },
+    {
+      "Sid": "KMSDecryptSecrets",
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:kms:<AWS_REGION>:<AWS_ACCOUNT_ID>:key/<KMS_KEY_ID>"
+      ]
+    }
+  ]
+}

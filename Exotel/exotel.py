@@ -128,11 +128,23 @@ async def process_recording(
         kisan_audio_path = f"static/calls/{audio_id}_kisan_{ts}.mp3"
         await ai_service.text_to_speech(response_text, kisan_audio_path)
 
+        # Optional S3 upload of call audio (disabled by default, enabled via S3_UPLOAD_AUDIO=true)
+        try:
+            try:
+                from storage import upload_call_audio
+            except ImportError:
+                from backend.storage import upload_call_audio
+            background_tasks.add_task(upload_call_audio, farmer_audio_path, CallSid, "farmer")
+            background_tasks.add_task(upload_call_audio, kisan_audio_path, CallSid, "kisan")
+        except Exception as e:
+            print(f"⚠️  S3 audio upload dispatch skipped: {e}")
+
         if CallSid:
             await call_service.append_transcript(CallSid, "farmer", farmer_text, farmer_audio_path)
             await call_service.append_transcript(CallSid, "kisan", response_text, kisan_audio_path)
             if flags:
                 await flag_service.create_flags(flags, CallSid, farmer.get("district"), farmer.get("village"), farmer_audio_path)
+
 
         # We no longer cleanup the files immediately so we can view them in the dashboard
 

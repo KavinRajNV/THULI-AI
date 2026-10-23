@@ -180,28 +180,31 @@ Place these in `backend/Dataset/` (or `backend/datasets/`):
 | `RandomForest.pkl` | Trained crop recommendation model |
 | `XGBoost.pkl` | Trained recommendation / yield model |
 
+## Deployment (AWS)
+
+> [!NOTE]
+> **Current Status: AWS deployment is IN PROGRESS.** 
+
+### Deployment Documentation & Specifications
+- 📖 **Step-by-Step PowerShell Guide**: [`deploy/aws/setup.md`](deploy/aws/setup.md)
+- 📐 **Architecture Documentation & Evidence Checklist**: [`docs/aws-deployment.md`](docs/aws-deployment.md)
+- 📊 **Architecture Diagram (Mermaid)**: [`docs/aws-architecture.mmd`](docs/aws-architecture.mmd)
+- ⚙️ **ECS Task Definition**: [`deploy/aws/ecs-task-definition.json`](deploy/aws/ecs-task-definition.json)
+- 🔒 **IAM Least-Privilege Policies**: [`deploy/aws/iam/`](deploy/aws/iam/)
+- 🤖 **GitHub Actions CI/CD Workflow**: [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)
+
 ---
-
-## Deployment (Render.com)
-
-1. Push to GitHub
-2. Create Render Web Service → point to `backend/`
-3. Build command: `pip install -r requirements.txt`
-4. Start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-5. Add environment variables in Render dashboard
-6. Deploy frontend as Render Static Site → point to `frontend/`, build: `npm run build`
-7. Set up UptimeRobot to ping `/ping` every 10 minutes
 
 ---
 
 ## Cost Breakdown
 
-- **OpenAI**: ~$5 covers entire hackathon (OpenAI 5.6 Luna)
+- **OpenAI**: ₹19.16 / 1M input tokens, ₹114.99 / 1M output tokens
 - **Sarvam AI**: STT/TTS costs
 - **PostgreSQL**: Free tier / self-hosted
 - **WeatherAPI**: Free tier (1M calls/month)
-- **Render.com**: Free tier
 - **Exotel**: Pay per call (~₹1/min)
+- **AWS**: Pay per use
 
 ---
 
