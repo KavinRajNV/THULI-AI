@@ -36,6 +36,11 @@ Thumbs.db
 # ML model weights (too large for git)
 models/
 *.pkl
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.onnx
 
 # Datasets (excluded from git)
 Dataset/
@@ -44,3 +49,10 @@ data/
 
 # Intent classification logs
 logs/
+
+# Secrets and dumps
+*.pem
+*.key
+*.sql
+*.dump
+

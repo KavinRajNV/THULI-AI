@@ -60,7 +60,15 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         print(f"❌ PostgreSQL connection failed: {e}")
 
+    # Load ML model artifacts from S3 (with automatic local-disk fallback)
+    try:
+        from storage import download_models_from_s3
+        download_models_from_s3()
+    except Exception as e:
+        print(f"⚠️  Storage model sync skipped or failed: {e}")
+
     load_all_datasets()
+
     
     # Initialize Disease RAG (BGE-M3 + FAISS)
     from services.disease_service import init_models
@@ -111,11 +119,24 @@ app.include_router(admin.router, tags=["Admin"])
 app.include_router(alerts.router, tags=["Alerts"])
 
 
+@app.get("/health")
+async def health():
+    """Container & ECS Fargate health check endpoint."""
+    from datetime import datetime
+    return {
+        "status": "healthy",
+        "service": "kisan-ai-backend",
+        "version": "1.0.0",
+        "timestamp": datetime.utcnow().isoformat(),
+    }
+
+
 @app.get("/ping")
 async def ping():
     """Keep-alive for Render.com free tier (hit by UptimeRobot every 10 min)."""
     from datetime import datetime
     return {"status": "alive", "timestamp": datetime.utcnow().isoformat()}
+
 
 
 @app.get("/")
